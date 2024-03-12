@@ -4,12 +4,14 @@
 
 class HoneyComb:
     def __init__(self, L) :
+        """Note that our assumption of two plaquettes haveing only
+          one common link doesn't hold for 2x2 Lattice"""
         self.L = L
         self.linkCount = 3 * L * L
         self.vertexCount = 2 * L * L
         self.plaquetteCount = L * L
-        NumerateLinks(self)
-        NumerateVertices(self)
+        self.NumerateLinks()
+        self.NumerateVertices()
     
     def GetPlaquetteNum(self, coordinate):
         x, y = coordinate
@@ -19,7 +21,7 @@ class HoneyComb:
         y = num // self.L
         x = num % self.L
         return (x, y)
-    def GetPlaquetteNeighboursByCoordinate(self, coordinate):
+    def GetPlaquetteNeighboursNumByCoordinate(self, coordinate):
         x, y = coordinate
         L = self.L
         if y % 2 == 0: # y is even
@@ -42,7 +44,7 @@ class HoneyComb:
             ]
         neigbourNums = []
         for plaquetteCoordinte in neighbourCoordinates:
-            neigbourNum = GetPlaquetteNum(self, plaquetteCoordinte)
+            neigbourNum = self.GetPlaquetteNum(plaquetteCoordinte)
             neigbourNums.append(neigbourNum)
         return neigbourNums
 
@@ -51,11 +53,13 @@ class HoneyComb:
         linkCordToNum = dict()
         linkNumToCord = dict()
         linkCnt = 0
-        for x in range(L):
-            for y in range(L):
-                neighbours = GetPlaquetteNeighboursByCoordinate(self, (x, y))
-                currentPlaquette = GetPlaquetteNum(self, (x, y))
-                for neigbour in neigbours:
+        for y in range(L):
+            for x in range(L):
+                neighbours = self.GetPlaquetteNeighboursNumByCoordinate((x, y))
+                currentPlaquette = self.GetPlaquetteNum((x, y))
+                print(currentPlaquette)
+                print(neighbours)
+                for neigbour in neighbours:
                     i = currentPlaquette
                     j = neigbour
                     if i < j:
@@ -75,13 +79,8 @@ class HoneyComb:
         vertexNumToCord = dict()
         for x in range(L):
             for y in range(L):
-                currentNum = GetPlaquetteNum(self, (x, y))
-                neighbourCords = GetPlaquetteNeighboursByCoordinate(self, (x, y))
-                neighbourNums = []
-                # getting the neighbours numbers from their coordinates:
-                for neighbourCord in neighbourCords:
-                    neighbourNum = GetPlaquetteNum(self, neighbourCord)
-                    neighbourNums.append(neighbourNum)
+                currentNum = self.GetPlaquetteNum((x, y))
+                neighbourNums = self.GetPlaquetteNeighboursNumByCoordinate((x, y))
                 vertices = [
                     [neighbourNums[0], neighbourNums[1], currentNum],
                     [neighbourNums[1], neighbourNums[3], currentNum],
