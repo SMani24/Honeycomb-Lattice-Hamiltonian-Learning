@@ -1,7 +1,12 @@
-import HoneyComb
-hc = HoneyComb.HoneyComb(4)
-linkCordToNum = hc.linkCordToNum
-linkNumToCord = hc.linkNumToCord
+import NumerateHoneycomb
+hc = NumerateHoneycomb.NumerateHoneycomb(4)
 
-for item in linkNumToCord.items():
-    print(item)
+vertexToLink = hc.vertexToLink
+linkToVertex = hc.linkToVertex
+plaquetteToLink = hc.plaquetteToLink
+plaquetteToVertex = hc.plaquetteToVertex
+vertexToPlaquette = hc.vertexToPlaquette
+linkToPlaquette = hc.linkToPlaquette
+
+for key, item in vertexToLink.items():
+    print(key, item)
