@@ -22,12 +22,12 @@ class NumerateHoneycomb:
         self.GenerateVertexToLink()
 
         # Saving dicts:
-        self.SaveDict(self.vertexToLink, f"L={L}_vertexToLink")
-        self.SaveDict(self.linkToVertex, f"L={L}_linkToVertex")
-        self.SaveDict(self.plaquetteToLink, f"L={L}_plaquetteToLink")
-        self.SaveDict(self.plaquetteToVertex, f"L={L}_plaquetteToVertex")
-        self.SaveDict(self.vertexToPlaquette, f"L={L}_vertexToPlaquettek")
-        self.SaveDict(self.linkToPlaquette, f"L={L}_linkToPlaquette")
+        # self.SaveDict(self.vertexToLink, f"L={L}_vertexToLink")
+        # self.SaveDict(self.linkToVertex, f"L={L}_linkToVertex")
+        # self.SaveDict(self.plaquetteToLink, f"L={L}_plaquetteToLink")
+        # self.SaveDict(self.plaquetteToVertex, f"L={L}_plaquetteToVertex")
+        # self.SaveDict(self.vertexToPlaquette, f"L={L}_vertexToPlaquettek")
+        # self.SaveDict(self.linkToPlaquette, f"L={L}_linkToPlaquette")
         
     def SaveDict(self, dic, name):
         with open(f'./{name}.csv', 'w') as csv_file:  
