@@ -1,3 +1,5 @@
+import math
+
 class Vertex:
     def __init__(self, number):
         self.__number = number
@@ -16,3 +18,17 @@ class Vertex:
     def applyStabilizerOperatorA(self):
         for link in self.__links:
             link.applySigmaX()
+
+    def calculateError(self):
+        """
+        returns the following: 
+            exp{beta * sigma{lambda * Z} over all the links of the vertex}
+            where Z is the pauli operator Z
+        """
+        result = 0
+        for link in self.__links:
+            link.applySigmaZ()
+            result += link.getBeta() * link.getPhase() * link.getLambdaZ()
+            link.applySigmaZ()
+        return math.exp(result)
+         
