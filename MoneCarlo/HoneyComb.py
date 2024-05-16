@@ -21,7 +21,7 @@ class HoneyComb:
         self.__setPlaquetteValue()
 
     def __initiateAll(self, lambdaZFilePath):
-        lambdaZConfig = np.zeros(self.__linkCount)
+        lambdaZConfig = np.zeros(self.__linkCount) # This is an array where i th value corresponds to the lambdaZ of i th link
         if lambdaZFilePath != "":
             lambdaZConfig = np.loadtxt(lambdaZFilePath, delimiter=',')
         for linkNum in range(self.__linkCount):
@@ -94,11 +94,14 @@ class HoneyComb:
         hamiltonian = 0
         for vertex in self.__vertices:
             # print(f"vertex = {vertex.getNumber()}, {vertex.calculateError()}")
+            # Calculating <A>:
+            hamiltonian += (-1) * vertex.calculateLinkPhaseProduct()
+            # Calculating the exp term:
             hamiltonian += vertex.calculateError()
 
         for plaquette in self.__plaquettes:
-            if plaquette.hasOddNumberOf1Links():
-                hamiltonian += 1
+            # Calculating <B>
+            hamiltonian += (-1) * ((-1) ^ (plaquette.calculateNumberOf1Links()))
         return hamiltonian
     
     def selectRandomVertex(self):

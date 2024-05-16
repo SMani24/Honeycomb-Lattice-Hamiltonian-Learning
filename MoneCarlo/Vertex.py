@@ -22,6 +22,12 @@ class Vertex:
         for link in self.__links:
             link.applySigmaX()
 
+    def calculateLinkPhaseProduct(self):
+        phaseProduct = 1
+        for link in self.__links:
+            phaseProduct *= link.getPhase()
+        return phaseProduct
+
     def calculateError(self):
         """
         returns the following: 
@@ -31,7 +37,7 @@ class Vertex:
         result = 0
         for link in self.__links:
             link.applySigmaZ()
-            result += link.getBeta() * link.getPhase() * link.getLambdaZ()
+            result += (-1) * link.getBeta() * link.getLambdaZ() * link.getPhase()
             link.applySigmaZ()
         return math.exp(result)
          

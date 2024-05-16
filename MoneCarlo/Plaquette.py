@@ -17,10 +17,10 @@ class Plaquette:
         for link in self.__links:
             link.applySigmaZ()
     
-    def hasOddNumberOf1Links(self):
+    def calculateNumberOf1Links(self):
         numberOf1Links = 0
         for link in self.__links:
             if link.getSpin() == 1:
                 numberOf1Links += 1
-        return numberOf1Links % 2 == 1
+        return numberOf1Links
     
