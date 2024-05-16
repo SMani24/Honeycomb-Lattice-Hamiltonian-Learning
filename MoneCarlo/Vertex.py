@@ -9,6 +9,9 @@ class Vertex:
     def getNumber(self):
         return self.__number
     
+    def getLinks(self):
+        return self.__links
+    
     def addLink(self, link):
         self.__links.append(link)
 

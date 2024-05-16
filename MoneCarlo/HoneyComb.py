@@ -60,7 +60,19 @@ class HoneyComb:
             # finding the corresponding vertices of a plaquette
             for vertexNum in self.__numeratedHoneyComb.plaquetteToVertex[plaquette.getNumber()]:
                 plaquette.addVertex(self.__vertices[vertexNum])        
+    # getters:
+    def getLinkCount(self):
+        return self.__linkCount
     
+    def getVertexCount(self):
+        return self.__vertexCount
+    
+    def getPlaquetteCount(self):
+        return self.__plaquetteCount
+    
+    def getLinkByNumber(self, linkNumber):
+        return self.__links[linkNumber]
+
     def applyStabilizerOperatorA(self, vertex):
         """
             Applies the "A" operator on the given vertex

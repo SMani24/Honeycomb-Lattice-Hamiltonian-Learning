@@ -30,6 +30,15 @@ class Link:
     def getLambdaZ(self):
         return self.__lambdaZ
     
+    def getAdjacentLinks(self):
+        """
+        returns a list of adjacent links to this link (including itself)
+        """
+        adjacentLinks = []
+        for vertex in self.__vertices:
+            adjacentLinks += vertex.getLinks()
+        return list(set(adjacentLinks)) # to remove duplicates in the links
+    
     def addVertex(self, vertex):
         self.__vertices.append(vertex)
 
