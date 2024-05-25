@@ -3,17 +3,17 @@ import random
 import HoneyComb
 import numpy as np
 
-latticeSize = int(input("Enter lattice size: "))
-beta = float(input("Enter beta: "))
-singleQubitErrorProbability = (float(input("Enter the probability of chosing a vertex: ")))
-numOfLambdaConfigs = int(input("Enter the number of lambda configs to be generated: "))
-generateVertexLambda = input("Do you want the VertexLambda to be generated?(Yes/No)")
+# latticeSize = int(input("Enter lattice size: "))
+# beta = float(input("Enter beta: "))
+# singleQubitErrorProbability = (float(input("Enter the probability of chosing a link: ")))
+# numOfLambdaConfigs = int(input("Enter the number of lambda configs to be generated: "))
+# generateVertexLambda = input("Do you want the VertexLambda to be generated?(Yes/No)")
 
-# latticeSize = 100
-# beta = 0.2
-# singleQubitErrorProbability = 0.2
-# numOfLambdaConfigs = 1
-# generateVertexLambda = "y"
+latticeSize = 4
+beta = 0.5
+singleQubitErrorProbability = 0.2
+numOfLambdaConfigs = 1000
+generateVertexLambda = "y"
 
 # Making sure the file path exist
 filePath = f"./LambdaConfigs/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
@@ -48,7 +48,7 @@ if generateVertexLambda.lower() in ["yes", "y"]:
             for linkNumber in unavailableLinks:
                 if linkNumber in availableLinkNumbers:
                     availableLinkNumbers.remove(linkNumber)
-            chosenLinks[linkNumber] = 1
+            chosenLinks[linkNumber] = -1
             numOfChosenLinks += 1
         fileName = f"VertexLmabdaConfig={configNumber}.csv"
         saveFile(chosenLinks, filePath + fileName)

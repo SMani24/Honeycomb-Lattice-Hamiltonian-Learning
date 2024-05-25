@@ -2,17 +2,18 @@
 # SMani24
 # MoeenFJ
 import numpy as np
+import pandas as pd
 import csv
 
 class NumerateHoneycomb:
-    def __init__(self, L) :
+    def __init__(self, latticeSize) :
         """Note that our assumption of two plaquettes haveing only
           one common link doesn't hold for 2x2 Lattice"""
         # Setting the value
-        self.L = L
-        self.linkCount = 3 * L * L
-        self.vertexCount = 2 * L * L
-        self.plaquetteCount = L * L
+        self.latticeSize = latticeSize
+        self.linkCount = 3 * latticeSize * latticeSize
+        self.vertexCount = 2 * latticeSize * latticeSize
+        self.plaquetteCount = latticeSize * latticeSize
         # Generating dicts:
         self.NumerateLinks()
         self.NumerateVertices()
@@ -22,35 +23,38 @@ class NumerateHoneycomb:
         self.GenerateVertexToLink()
 
         # Saving dicts:
-        self.SaveDict(self.vertexToLink, f"L={L}_vertexToLink")
-        self.SaveDict(self.linkToVertex, f"L={L}_linkToVertex")
-        self.SaveDict(self.plaquetteToLink, f"L={L}_plaquetteToLink")
-        self.SaveDict(self.plaquetteToVertex, f"L={L}_plaquetteToVertex")
-        self.SaveDict(self.vertexToPlaquette, f"L={L}_vertexToPlaquettek")
-        self.SaveDict(self.linkToPlaquette, f"L={L}_linkToPlaquette")
+        self.SaveDict(self.vertexToLink, f"LatticeSize={latticeSize}_vertexToLink")
+        self.SaveDict(self.linkToVertex, f"LatticeSize={latticeSize}_linkToVertex")
+        self.SaveDict(self.plaquetteToLink, f"LatticeSize={latticeSize}_plaquetteToLink")
+        self.SaveDict(self.plaquetteToVertex, f"LatticeSize={latticeSize}_plaquetteToVertex")
+        self.SaveDict(self.vertexToPlaquette, f"LatticeSize={latticeSize}_vertexToPlaquette")
+        self.SaveDict(self.linkToPlaquette, f"LatticeSize={latticeSize}_linkToPlaquette")
         
     def SaveDict(self, dic, name):
-        with open(f'./{name}.csv', 'w') as csv_file:  
+        # dataFrame = pd.DataFrame(dic)
+        # dataFrame.to_csv(f"./{name}.csv")
+        with open(f'./{name}.csv', 'w', newline='') as csv_file:  
             writer = csv.writer(csv_file)
             for key, value in dic.items():
+                # print(f"key = {key}, value = {value}")
                 writer.writerow([key, value])
         csv_file.close()
     def GetPlaquetteNum(self, coordinate):
         """Getting the plaquette's number from its coordinate"""
         x, y = coordinate
-        num = y * self.L + x
+        num = y * self.latticeSize + x
         return num
     def GetPlaquetteCoordinate(self, num):
         """Getting the plaquette's coordinate from its number"""
-        y = num // self.L
-        x = num % self.L
+        y = num // self.latticeSize
+        x = num % self.latticeSize
         return (x, y)
     def GetPlaquetteNeighboursNumByCoordinate(self, coordinate):
         """Getting the list of the plaquetes neighbours
             intput : plaquettes coordinate
             output : the list of plaquettes neighbours numbers"""
         x, y = coordinate
-        L = self.L
+        L = self.latticeSize
         if y % 2 == 0: # y is even
             neighbourCoordinates = [
                 (x, (y - 1) % L),
@@ -76,7 +80,7 @@ class NumerateHoneycomb:
         return neigbourNums
 
     def NumerateLinks(self) :
-        L = self.L
+        L = self.latticeSize
         linkCordToNum = dict()
         linkToPlaquette = dict()
         linkCnt = 0
@@ -98,7 +102,7 @@ class NumerateHoneycomb:
         self.linkCordToNum = linkCordToNum
         self.linkToPlaquette = linkToPlaquette
     def NumerateVertices(self):
-        L = self.L
+        L = self.latticeSize
         vertexCnt = 0
         vertexCordToNum = dict()
         vertexToPlaquette = dict()
@@ -162,3 +166,7 @@ class NumerateHoneycomb:
                     vertexToLink[vertex] = []
                 vertexToLink[vertex].append(link)
         self.vertexToLink = vertexToLink
+
+for latticeSize in range(4, 40, 2):
+    NumerateHoneycomb(latticeSize)
+    print(f"Numeratetd honeyComb with lattice size ={latticeSize}")
