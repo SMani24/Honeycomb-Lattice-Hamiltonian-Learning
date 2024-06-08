@@ -1,3 +1,7 @@
+# In the name of God
+# SMani24
+# Ali Kookani
+
 class Link:
     def __init__(self, number, beta, lambdaZ):
         self.__spin = 0 # the state of the link, either |0> or |1>
@@ -14,6 +18,12 @@ class Link:
 
     def setSpin(self, spin):
         self.__spin = spin
+
+    def getVertices(self):
+        return self.__vertices
+    
+    def getPlaquettes(self):
+        return self.__plaquettes
     
     def getNumber(self):
         return self.__number

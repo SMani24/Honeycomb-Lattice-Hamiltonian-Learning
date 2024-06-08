@@ -1,3 +1,7 @@
+# In the name of God
+# SMani24
+# Ali Kookani
+
 import ast
 import Link
 import Vertex
@@ -21,6 +25,7 @@ class HoneyComb:
         self.__setVertexValues()
         self.__setPlaquetteValue()
         self.__deleteNumertaion()
+        self.energy = self.__calculateWholeLatticeEnergy()
 
     def __deleteNumertaion(self):
         del self.__vertexToLink
@@ -114,13 +119,18 @@ class HoneyComb:
     def applyStabilizerOperatorA(self, vertex):
         """
             Applies the "A" operator on the given vertex
+            and updates the lattice's energy
             ("A" operator applies the sigma x pauli matrix on 
             the adjacent links of a vertex)
         """
+        changedLinks = vertex.getLinks()
+        oldEnergy = self.__calculateEnergy(changedLinks)
         vertex.applyStabilizerOperatorA()
-
+        newEnergy = self.__calculateEnergy(changedLinks)
+        self.energy += newEnergy - oldEnergy
     def applyStabilizerOperatorB(self, plaquetteNum):
         """
+            Needs to be fixed!!
             Applies the "B" operator on the given plaquette
             ("B" operator applies the sigma z pauli matrix on 
             the links of a plaquette)
@@ -128,19 +138,51 @@ class HoneyComb:
         plaquette = self.__plaquettes[plaquetteNum]
         plaquette.applyStabilizerOperatorB()
 
-    def calculateEnergy(self):
-        hamiltonian = 0
+    def __calculateVertexEnergy(self, vertex):
+        energy = 0
+        # Calculating <A>:
+        energy += 0
+        # Calculating the exp term:
+        energy += vertex.calculateError()
+        return energy
+
+    def __calculatePlaquetteEnergy(self, plaquette):
+        energy = 0
+        # Calculating <B>
+        energy += (-1) * ((-1) ^ (plaquette.calculateNumberOf1Links()))
+        return energy
+
+    def __calculateWholeLatticeEnergy(self):
+        energy = 0
         for vertex in self.__vertices:
-            # print(f"vertex = {vertex.getNumber()}, {vertex.calculateError()}")
-            # Calculating <A>:
-            hamiltonian += (-1) * vertex.calculateLinkPhaseProduct()
-            # Calculating the exp term:
-            hamiltonian += vertex.calculateError()
+            energy += self.__calculateVertexEnergy(vertex)
 
         for plaquette in self.__plaquettes:
-            # Calculating <B>
-            hamiltonian += (-1) * ((-1) ^ (plaquette.calculateNumberOf1Links()))
-        return hamiltonian
+            energy += self.__calculatePlaquetteEnergy(plaquette)
+        return energy
+
+
+    def __calculateEnergy(self, links):
+        # Finding the adjacent vertices of the given links:
+        vertices = set()
+        for link in links:
+            for vertex in link.getVertices():
+                vertices.add(vertex)
+
+        # Finding the adjacent palquettes of the given links:
+        plaquettes = set()
+        for link in links:
+            for plaquette in link.getPlaquettes():
+                plaquettes.add(plaquette)
+
+        energy = 0
+        for vertex in vertices:
+            energy += self.__calculateVertexEnergy(vertex)
+
+        for plaquette in plaquettes:
+            energy += self.__calculatePlaquetteEnergy(plaquette)
+        
+        return energy
     
     def selectRandomVertex(self):
         return self.__vertices[random.randint(0, self.__vertexCount - 1)]
