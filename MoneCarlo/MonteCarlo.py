@@ -3,6 +3,7 @@
 # Ali Kookani
 
 import HoneyComb
+import statistics
 import math
 import random
 import matplotlib.pyplot as plt
@@ -29,13 +30,13 @@ def probabilityOfSimulatedAnnealing(initialEnergy, postEnergy, T):
 
 def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbability=0, 
                numOfItertions=100000, numOfSamples=10000, configNumber=-1):
-    T = 100
+    T = 10000
     TDiffrence = T / (80 / 100 * numOfItertions)
     lattice = HoneyComb.HoneyComb(latticeSize=latticeSize, beta=beta,
                                        lambdaZFilePath=lambdaZFilePath)
     currentEnergy = lattice.energy
     # probabilities = []
-    # eneregies = []
+    energies = []
     states = []
     for iteration in range(numOfItertions + numOfSamples):
         # print(f"T = {T}, probabilty = {currentStatetProbablity}")
@@ -55,14 +56,16 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
         if iteration >= numOfItertions:
             # print(lattice.generateStateString())
             states.append(lattice.generateStateString())
+            energies.append(currentEnergy)
         # else:
         #     eneregies.append(currentEnergy)
         #     probabilities.append(currentStateProbability)
         
-        if iteration % 10000 == 0:
-            print(f"ConfigNum = {configNumber} progress: {int(iteration / (numOfItertions + numOfSamples) * 100)}%")
+        # if iteration % 10000 == 0:
+        #     print(f"ConfigNum = {configNumber} progress: {int(iteration / (numOfItertions + numOfSamples) * 100)}%")
     filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}"
     print(filePath)
+    print(statistics.variance(energies))
     saveData(states, filePath + ".csv")
     del states
     # del eneregies
