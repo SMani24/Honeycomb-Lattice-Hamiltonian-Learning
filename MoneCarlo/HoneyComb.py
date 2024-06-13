@@ -140,7 +140,7 @@ class HoneyComb:
 
     def __calculateVertexEnergy(self, vertex):
         energy = 0
-        # Calculating <A>:
+        # Calculating <A>: <A> is zero
         energy += 0
         # Calculating the exp term:
         energy += vertex.calculateError()
