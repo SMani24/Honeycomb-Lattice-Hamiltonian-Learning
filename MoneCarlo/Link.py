@@ -62,4 +62,9 @@ class Link:
         if self.__spin == 1:
             self.__phase *= -1
 
+    def hasLambdaZError(self):
+        if self.__lambdaZ != 0:
+            return True
+        return False
+
     

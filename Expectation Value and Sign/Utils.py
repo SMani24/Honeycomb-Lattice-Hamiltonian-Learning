@@ -67,6 +67,27 @@ def applySigmaX(linkId, state):
 
     return newState
 
+def getPhase(phaseChar):
+    if phaseChar == '0':
+        return -1
+    elif phaseChar == '1':
+        return 1
+    else:
+        raise ValueError("Unvalid char")
+
+def applySigmaZ(linkId, state):
+    """
+        Applies the sigmaZ pauli operator to the given link and returns the new Phase
+    """
+    linkSpinPos = 2 * linkId
+    linkPhasePos = 2 * linkId + 1
+    if state[linkSpinPos] == "0":
+        return getPhase(state[linkPhasePos])
+    else:
+        phase = getPhase(state[linkPhasePos])
+        phase *= -1
+        return phase
+
 def applyStabilizerOperatorA(vertexId, state, numeration):
     """
         Applies the operator A on the vertex with id "vertexId"

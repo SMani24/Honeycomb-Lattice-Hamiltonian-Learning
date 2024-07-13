@@ -31,16 +31,17 @@ def probabilityOfSimulatedAnnealing(initialEnergy, postEnergy, T):
 def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbability=0, 
                numOfItertions=100000, numOfSamples=10000, configNumber=-1):
     T = 10000
-    TDiffrence = T / (80 / 100 * numOfItertions)
+    TDiffrence = T / (70 / 100 * numOfItertions)
+    print(TDiffrence)
     lattice = HoneyComb.HoneyComb(latticeSize=latticeSize, beta=beta,
                                        lambdaZFilePath=lambdaZFilePath)
     currentEnergy = lattice.energy
-    # probabilities = []
+    probabilities = []
     energies = []
     states = []
     for iteration in range(numOfItertions + numOfSamples):
         # print(f"T = {T}, probabilty = {currentStatetProbablity}")
-        T = max(T - TDiffrence , 5)
+        T = max(T - TDiffrence , 0.3)
         vertex = lattice.selectRandomVertex()
         # Entering the new state
         lattice.applyStabilizerOperatorA(vertex)
@@ -56,28 +57,30 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
         if iteration >= numOfItertions:
             # print(lattice.generateStateString())
             states.append(lattice.generateStateString())
-            energies.append(currentEnergy)
+            # energies.append(currentEnergy)
+            # probabilities.append(currentStateProbability)
         # else:
-        #     eneregies.append(currentEnergy)
+        #     energies.append(currentEnergy)
         #     probabilities.append(currentStateProbability)
         
-        # if iteration % 10000 == 0:
-        #     print(f"ConfigNum = {configNumber} progress: {int(iteration / (numOfItertions + numOfSamples) * 100)}%")
+        if iteration % 10000 == 0:
+            print(f"ConfigNum = {configNumber} progress: {int(iteration / (numOfItertions + numOfSamples) * 100)}%")
     filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}"
     print(filePath)
     print(statistics.variance(energies))
     saveData(states, filePath + ".csv")
-    del states
-    # del eneregies
-    # del probabilities
 
     # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))  
 
-    # ax1.plot(list(range(numOfItertions)), eneregies, label="energies", color='g')             # Line plot of y vs. x
-    # ax2.plot(list(range(numOfItertions)), probabilities, label="probabilties")
+    # ax1.plot(list(range(numOfItertions + numOfSamples)), energies, label="energies", color='g')             # Line plot of y vs. x
+    # ax2.plot(list(range(numOfItertions + numOfSamples)), probabilities, label="probabilties")
     
     # plt.tight_layout()  # Adjust subplots to fit into the figure area.
+    # plt.show()
     # plt.savefig(filePath + ".png")
+    del states
+    del energies
+    del probabilities
 
 def multithreadMonteCarlo(job):
     latticeSize, beta, lambdaZFilePath, singleQubitErrorProbability, numOfItertions, numOfSamples, configNumber = job

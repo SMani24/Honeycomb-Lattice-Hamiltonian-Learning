@@ -3,12 +3,13 @@
 # Ali Kookani
 import multiprocessing as mp
 import ExpectationValueCalculator
+import SignCalculator
 import time
 import os
 
 startTime = time.time()
 
-def calculateExpectationValueJobs():
+def generateExpectationValueJobs():
     jobs = []
     inputDir = f"../MoneCarlo/MCOutput/"
     outputDir = f"./ExpectationValues/"
@@ -25,6 +26,22 @@ def calculateExpectationValueJobs():
                     jobs.append(job)
     return jobs
 
+def generateSingJobs():
+    jobs = []
+    inputDir = f"../MoneCarlo/MCOutput/"
+    outputDir = f"./Signs/"
+    for latticeSize in [8]:
+        for beta in [0.5]:
+            for singleQubitErrorProbability in [0]:
+                for configNumber in range(0, 1000):
+                    filePath = f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
+                    stateFilePath = inputDir + filePath + f"configNumber={configNumber}.csv"
+                    singFilePath = outputDir + filePath + f"sign_configNumber={configNumber}.csv"
+                    job = (stateFilePath, singFilePath, latticeSize)
+                    print(job)
+                    jobs.append(job)
+    return jobs
+
 if __name__ == "__main__":
     threadNumber = int(input("Enter the number of threades to be used: "))
 
@@ -35,9 +52,18 @@ if __name__ == "__main__":
 
     choice = input("Enter A to calculate <A> or S to calculate sign: ")
     if choice.upper() == 'A':
-        jobs = calculateExpectationValueJobs()
+        jobs = generateExpectationValueJobs()
 
         pool.map(ExpectationValueCalculator.multithreadRun, jobs)
+
+    elif choice.upper() == 'S':
+        jobs = generateSingJobs()
+
+        pool.map(SignCalculator.multithreadRun, jobs) 
+
+    else:
+        print("Invalid input!")
+        exit()
     
     finishTime = time.time()
     print("Total time: ", finishTime - startTime)

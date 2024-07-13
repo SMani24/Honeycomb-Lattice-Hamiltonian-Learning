@@ -44,4 +44,13 @@ class Vertex:
             result += (-1) * link.getBeta() * link.getLambdaZ() * link.getPhase()
             link.applySigmaZ()
         return math.exp(result)
+    
+    def hasLambdaZError(self):
+        """
+            returns 1 if the vertex has a link with error and 0 otherwise
+        """
+        for link in self.__links:
+            if link.hasLambdaZError():
+                return True
+        return False
          

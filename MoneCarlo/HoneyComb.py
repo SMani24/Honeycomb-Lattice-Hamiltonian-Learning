@@ -215,3 +215,16 @@ class HoneyComb:
             if link.getPhase() == -1:
                 stateString += '0'
         return stateString
+    
+    def generateVertexLambdaZErrorList(self):
+        """
+            Generates a list of 0s and 1s, ith index is 0 when the ith vertex
+            has no links with error and 1 otherwise
+        """
+        errorList = []
+        for vertex in self.__vertices:
+            if vertex.hasLambdaZError():
+                errorList.append((vertex.getNumber(), 1))
+            else:
+                errorList.append((vertex.getNumber(), 0))
+        return errorList
