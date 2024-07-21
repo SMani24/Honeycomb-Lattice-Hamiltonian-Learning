@@ -9,7 +9,7 @@ import MonteCarlo
 startTime = time.time()
 
 NUMBER_OF_ITERATIONS = 100000
-NUMBER_OF_SAMPELS = 100000
+NUMBER_OF_SAMPELS = 10000
 
 if __name__ == "__main__":
     threadNumber = int(input("Enter the number of threades to be used: "))

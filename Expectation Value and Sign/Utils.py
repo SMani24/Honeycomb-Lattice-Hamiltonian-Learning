@@ -12,7 +12,7 @@ class Numeration:
         self.vertexCount = 2 * (latticeSize * latticeSize)
         self.plaquetteCount = latticeSize * latticeSize
 
-        numerationFile = "../MoneCarlo/Numeration/"
+        numerationFile = "../Lattice/Numeration/"
         vertexToLinkFilePath = numerationFile + f"LatticeSize={latticeSize}_vertexToLink.csv"
         linkToVertexFilePath = numerationFile + f"LatticeSize={latticeSize}_linkToVertex.csv"
         plaquetteToVertexFilePath = numerationFile + f"LatticeSize={latticeSize}_plaquetteToVertex.csv"

@@ -1,4 +1,7 @@
- 
+# Adding the lattice path:
+import sys
+# caution: path[0] is reserved for script path (or '' in REPL)
+sys.path.insert(1, "../Lattice") 
 
 import os
 import HoneyComb
@@ -41,7 +44,7 @@ def drawPlot(x, y, outputPath, XLabel='', YLabel='', title=''):
 
 def run():
     singleQubitErrorProbabilities = [0, 0.05, 0.1, 0.15, 0.2]
-    for latticeSize in [8]:
+    for latticeSize in [12, 16, 20, 24, 28]:
         for beta in [0.5]:
             vertexFlipProbability = []
             for singleQubitErrorProbability in singleQubitErrorProbabilities:
