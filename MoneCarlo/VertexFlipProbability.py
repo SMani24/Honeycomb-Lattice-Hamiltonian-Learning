@@ -17,10 +17,10 @@ def calculateAverageVertexFlipProbability(latticeSize, beta, singleQubitErrorPro
     vertexErrorNumber = np.zeros(linkCount)
     for configNumber in range(numberOfConfigs):
         print(configNumber)
-        lambdaZFilePath = f"./LambdaConfigs/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/VertexLmabdaConfig={configNumber}.csv"
+        lambdaZFilePath = f"../Lattice/LambdaConfigs/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/VertexLmabdaConfig={configNumber}.csv"
         calculateSingleConfigVertexFlipProbability(latticeSize, beta, lambdaZFilePath, vertexErrorNumber)
     
-    vertexErrorProbability = vertexErrorNumber / (vertexCount * numberOfConfigs)
+    vertexErrorProbability = vertexErrorNumber / (numberOfConfigs)
     return np.mean(vertexErrorProbability)
 
 def drawPlot(x, y, outputPath, XLabel='', YLabel='', title=''):
@@ -41,7 +41,7 @@ def drawPlot(x, y, outputPath, XLabel='', YLabel='', title=''):
 
 def run():
     singleQubitErrorProbabilities = [0, 0.05, 0.1, 0.15, 0.2]
-    for latticeSize in [12]:
+    for latticeSize in [8]:
         for beta in [0.5]:
             vertexFlipProbability = []
             for singleQubitErrorProbability in singleQubitErrorProbabilities:

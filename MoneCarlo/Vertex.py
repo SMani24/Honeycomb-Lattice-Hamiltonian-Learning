@@ -23,6 +23,10 @@ class Vertex:
         self.__plaquettes.append(plaquette)
     
     def applyStabilizerOperatorA(self):
+        """
+        Applies the stabilizer operator A on the given vertex
+        (X Pauli matrix on each link)
+        """
         for link in self.__links:
             link.applySigmaX()
 

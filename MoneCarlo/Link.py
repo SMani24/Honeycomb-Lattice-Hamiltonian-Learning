@@ -56,6 +56,10 @@ class Link:
         self.__plaquettes.append(plaquette)
     
     def applySigmaX(self):
+        """
+        Applies the X Pauli matrix on the link
+        (changes the spin from 1 to 0 and from 0 to 1)
+        """
         self.__spin = 1 - self.__spin
 
     def applySigmaZ(self):
@@ -66,5 +70,3 @@ class Link:
         if self.__lambdaZ != 0:
             return True
         return False
-
-    

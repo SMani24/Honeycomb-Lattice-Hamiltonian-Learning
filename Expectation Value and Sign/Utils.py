@@ -1,3 +1,6 @@
+# In the name of God
+# SMani24
+# Ali Kookani
 
 import numpy as np
 import csv

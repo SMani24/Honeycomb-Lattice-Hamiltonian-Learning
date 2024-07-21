@@ -12,7 +12,6 @@ import csv
 
 class HoneyComb:
     def __init__(self, latticeSize, beta, lambdaZFilePath=""):
-        self.__loadNumeration(latticeSize)
         self.__linkCount = 3 * (latticeSize * latticeSize)
         self.__vertexCount = 2 * (latticeSize * latticeSize)
         self.__plaquetteCount = latticeSize * latticeSize
@@ -20,33 +19,32 @@ class HoneyComb:
         self.__links = []
         self.__vertices = []
         self.__plaquettes = []
+        self.__loadNumeration(latticeSize)
         self.__initiateAll(lambdaZFilePath)
-        self.__setLinkValues()
+        self.__setLinkValues() 
         self.__setVertexValues()
         self.__setPlaquetteValue()
         self.__deleteNumertaion()
         self.energy = self.__calculateWholeLatticeEnergy()
 
-    def __deleteNumertaion(self):
-        del self.__vertexToLink
-        del self.__linkToVertex
-        del self.__plaquetteToLink
-        del self.__plaquetteToVertex
-        del self.__vertexToPlaquette
-        del self.__linkToPlaquette
-
-    def __loadFile(self, filePath):
-        myDict = dict()
-        with open(filePath) as csv_file:
-            reader = csv.reader(csv_file)
-            for key, value in reader:
-                key = int(key)
-                value = ast.literal_eval(value)
-                myDict[key] = value
-        return myDict
-
+    # Initiating the lattice:
     def __loadNumeration(self, latticeSize):
-        numerationFile = "./Numeration/"
+        """ 
+        loading the numeration of the vertices and links and plaquettes of 
+        the lattice from the pre-made files
+        """ 
+
+        def loadFile(filePath):
+            myDict = dict()
+            with open(filePath) as csv_file:
+                reader = csv.reader(csv_file)
+                for key, value in reader:
+                    key = int(key)
+                    value = ast.literal_eval(value)
+                    myDict[key] = value
+            return myDict
+        
+        numerationFile = "../Lattice/Numeration/"
         vertexToLinkFilePath = numerationFile + f"LatticeSize={latticeSize}_vertexToLink.csv"
         linkToVertexFilePath = numerationFile + f"LatticeSize={latticeSize}_linkToVertex.csv"
         plaquetteToLinkFilePath = numerationFile + f"LatticeSize={latticeSize}_plaquetteToLink.csv"
@@ -54,22 +52,24 @@ class HoneyComb:
         vertexToPlaquetteFilePath = numerationFile + f"LatticeSize={latticeSize}_vertexToPlaquette.csv"
         linkToPlaquetteFilePath = numerationFile + f"LatticeSize={latticeSize}_linkToPlaquette.csv"
         
-        self.__vertexToLink = self.__loadFile(vertexToLinkFilePath)
-        # print(self.__vertexToLink)
-        self.__linkToVertex = self.__loadFile(linkToVertexFilePath)
-        # print(self.__linkToVertex)
-        self.__plaquetteToLink = self.__loadFile(plaquetteToLinkFilePath)
-        self.__plaquetteToVertex = self.__loadFile(plaquetteToVertexFilePath)
-        self.__vertexToPlaquette = self.__loadFile(vertexToPlaquetteFilePath)
-        self.__linkToPlaquette = self.__loadFile(linkToPlaquetteFilePath)
+        self.__vertexToLink = loadFile(vertexToLinkFilePath)
+        self.__linkToVertex = loadFile(linkToVertexFilePath)
+        self.__plaquetteToLink = loadFile(plaquetteToLinkFilePath)
+        self.__plaquetteToVertex = loadFile(plaquetteToVertexFilePath)
+        self.__vertexToPlaquette = loadFile(vertexToPlaquetteFilePath)
+        self.__linkToPlaquette = loadFile(linkToPlaquetteFilePath)
 
     def __initiateAll(self, lambdaZFilePath):
-        lambdaZConfig = np.zeros(self.__linkCount) # This is an array where i th value corresponds to the lambdaZ of i th link
+        """
+        Creating empty links and vertices and plaquettes and 
+        adding their pointers to their correspoding lists
+        """
+        lambdaZConfig = np.zeros(self.__linkCount) # This is an array where the i th value corresponds to the lambdaZ of i th link
         if lambdaZFilePath != "":
             lambdaZConfig = np.loadtxt(lambdaZFilePath, delimiter=',')
+    
         for linkNum in range(self.__linkCount):
             self.__links.append(Link.Link(linkNum, self.__beta, lambdaZConfig[linkNum]))
-            # self.__links[linkNum].setSpin(random.randint(0, 1))
 
         for vertexNum in range(self.__vertexCount):
             self.__vertices.append(Vertex.Vertex(vertexNum)) 
@@ -78,6 +78,10 @@ class HoneyComb:
             self.__plaquettes.append(Plaquette.Plaquette(plaquetteNum))
 
     def __setLinkValues(self):
+        """
+        Adding the descreptions (pointers) of each link to it 
+        (its vertices and its plaquettes)
+        """
         for link in self.__links:
             # finding the corresponding vertices of a link
             for vertexNum in self.__linkToVertex[link.getNumber()]:
@@ -85,8 +89,12 @@ class HoneyComb:
             # finding the corresponding plaquettes of a link
             for plaquetteNum in self.__linkToPlaquette[link.getNumber()]:
                 link.addPlaquette(self.__plaquettes[plaquetteNum])
-    
+
     def __setVertexValues(self):
+        """
+        Adding the descreptions (pointers) of each vertex to it 
+        (its links and its plaquettes )
+        """
         for vertex in self.__vertices:
             # finding the corresponding links of a vertex
             for linkNum in self.__vertexToLink[vertex.getNumber()]:
@@ -94,8 +102,12 @@ class HoneyComb:
             # finding the corresponding plaquettes of a vertex
             for plaquetteNum in self.__vertexToPlaquette[vertex.getNumber()]:
                 vertex.addPlaquette(self.__plaquettes[plaquetteNum])
-    
+
     def __setPlaquetteValue(self):
+        """
+        Adding the descreptions (pointers) of each plaquette to it 
+        (its links and its plaquettes )
+        """
         for plaquette in self.__plaquettes:
             # finding the corresponding links of a plaquette
             for linkNum in self.__plaquetteToLink[plaquette.getNumber()]:
@@ -103,19 +115,46 @@ class HoneyComb:
             # finding the corresponding vertices of a plaquette
             for vertexNum in self.__plaquetteToVertex[plaquette.getNumber()]:
                 plaquette.addVertex(self.__vertices[vertexNum])        
+
+    def __deleteNumertaion(self):
+        del self.__vertexToLink
+        del self.__linkToVertex
+        del self.__plaquetteToLink
+        del self.__plaquetteToVertex
+        del self.__vertexToPlaquette
+        del self.__linkToPlaquette
+    
     # getters:
     def getLinkCount(self):
+        """
+        Returning the number of links in the lattice
+        """
         return self.__linkCount
     
     def getVertexCount(self):
+        """
+        Returning the number of vertices in the lattice
+        """
         return self.__vertexCount
     
     def getPlaquetteCount(self):
+        """
+        Returning the number of plaquettes in the lattice
+        """
         return self.__plaquetteCount
     
     def getLinkByNumber(self, linkNumber):
+        """
+        Returns a pointer to the link with the number {linkNumber}
+        """
         return self.__links[linkNumber]
 
+    def getEnergy(self):
+        """
+        Returns the energy of the lattice
+        """
+        return self.energy
+    
     def applyStabilizerOperatorA(self, vertex):
         """
             Applies the "A" operator on the given vertex
@@ -128,6 +167,7 @@ class HoneyComb:
         vertex.applyStabilizerOperatorA()
         newEnergy = self.__calculateEnergy(changedLinks)
         self.energy += newEnergy - oldEnergy
+    
     def applyStabilizerOperatorB(self, plaquetteNum):
         """
             Needs to be fixed!!
@@ -147,9 +187,12 @@ class HoneyComb:
         return energy
 
     def __calculatePlaquetteEnergy(self, plaquette):
+        """
+        This function could be potentially wrong
+        """
         energy = 0
         # Calculating <B>
-        energy += (-1) * ((-1) ^ (plaquette.calculateNumberOf1Links()))
+        # energy += (-1) * ((-1) ^ (plaquette.calculateNumberOf1Links()))
         return energy
 
     def __calculateWholeLatticeEnergy(self):
@@ -185,6 +228,10 @@ class HoneyComb:
         return energy
     
     def selectRandomVertex(self):
+        """
+        Returns a randomly selected vertex from the lattice
+        (all vertices have equal chance of being chosen)
+        """
         return self.__vertices[random.randint(0, self.__vertexCount - 1)]
     
     def selectRandomLink(self):
