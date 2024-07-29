@@ -1,7 +1,6 @@
 # In the name of God
 # SMani24
 # Ali Kookani
-
 import multiprocessing as mp
 import ExpectationValueCalculator
 import SignCalculator
@@ -10,17 +9,13 @@ import os
 
 startTime = time.time()
 
-BETA = [0.5]
-LATTICE_SIZE = [8]
-SINGLE_QBIT_ERROR_PROBABILITIES = [0.2] #, , ]
-
 def generateExpectationValueJobs():
     jobs = []
     inputDir = f"../MoneCarlo/MCOutput/"
     outputDir = f"./ExpectationValues/"
-    for latticeSize in LATTICE_SIZE:
-        for beta in BETA:
-            for singleQubitErrorProbability in SINGLE_QBIT_ERROR_PROBABILITIES:
+    for latticeSize in [8]:
+        for beta in [0.5]:
+            for singleQubitErrorProbability in [0]:
                 for configNumber in range(0, 1000):
                     filePath = f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
                     inputFilePath = inputDir + filePath + f"configNumber={configNumber}.csv"
@@ -35,9 +30,9 @@ def generateSingJobs():
     jobs = []
     inputDir = f"../MoneCarlo/MCOutput/"
     outputDir = f"./Signs/"
-    for latticeSize in LATTICE_SIZE:
-        for beta in BETA:
-            for singleQubitErrorProbability in SINGLE_QBIT_ERROR_PROBABILITIES:
+    for latticeSize in [8]:
+        for beta in [0.5]:
+            for singleQubitErrorProbability in [0]:
                 for configNumber in range(0, 1000):
                     filePath = f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
                     stateFilePath = inputDir + filePath + f"configNumber={configNumber}.csv"

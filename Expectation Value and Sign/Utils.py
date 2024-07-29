@@ -1,6 +1,3 @@
-# In the name of God
-# SMani24
-# Ali Kookani
 
 import numpy as np
 import csv
@@ -12,7 +9,7 @@ class Numeration:
         self.vertexCount = 2 * (latticeSize * latticeSize)
         self.plaquetteCount = latticeSize * latticeSize
 
-        numerationFile = "../Lattice/Numeration/"
+        numerationFile = "../MoneCarlo/Numeration/"
         vertexToLinkFilePath = numerationFile + f"LatticeSize={latticeSize}_vertexToLink.csv"
         linkToVertexFilePath = numerationFile + f"LatticeSize={latticeSize}_linkToVertex.csv"
         plaquetteToVertexFilePath = numerationFile + f"LatticeSize={latticeSize}_plaquetteToVertex.csv"
