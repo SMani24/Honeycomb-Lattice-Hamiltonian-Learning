@@ -11,6 +11,10 @@ startTime = time.time()
 NUMBER_OF_ITERATIONS = 1000000
 NUMBER_OF_SAMPELS = 10000
 
+LATTICE_SIZES = [8]
+BETAS = [0.5]
+SINGLE_QUBIT_ERROR_PROBABILITES = [0.0, 0.05]
+
 if __name__ == "__main__":
     threadNumber = int(input("Enter the number of threades to be used: "))
 
@@ -19,9 +23,9 @@ if __name__ == "__main__":
     
     poolJobs = []
 
-    for latticeSize in [8]:
-        for beta in [0.5]:
-            for singleQubitErrorProbability in [0.05]:
+    for latticeSize in LATTICE_SIZES:
+        for beta in BETAS:
+            for singleQubitErrorProbability in SINGLE_QUBIT_ERROR_PROBABILITES:
                 for configNumber in range(0, 1000):
                     lambdaZFilePath = f"./LambdaConfigs/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/VertexLmabdaConfig={configNumber}.csv"
                     poolJobs.append((latticeSize, beta, lambdaZFilePath, singleQubitErrorProbability, NUMBER_OF_ITERATIONS, NUMBER_OF_SAMPELS, configNumber))

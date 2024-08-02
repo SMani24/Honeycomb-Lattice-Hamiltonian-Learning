@@ -11,6 +11,8 @@ import csv
 import numpy as np
 import os
 
+MIN_T = 0.3
+
 def saveData(data, filePath):
     # # print(data)
     # Create the necessary directories
@@ -41,7 +43,7 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
     states = []
     for iteration in range(numOfItertions + numOfSamples):
         # print(f"T = {T}, probabilty = {currentStatetProbablity}")
-        T = max(T - TDiffrence , 0.3)
+        T = max(T - TDiffrence , MIN_T)
         vertex = lattice.selectRandomVertex()
         # Entering the new state
         lattice.applyStabilizerOperatorA(vertex)
@@ -50,6 +52,7 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
         randomNumber = random.random()
         if randomNumber < (1 - currentStateProbability):
             # Reversing our actions to get back to the original state
+            # print("OH NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
             lattice.applyStabilizerOperatorA(vertex)
         else:
             currentEnergy = newEnergy
@@ -57,8 +60,8 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
         if iteration >= numOfItertions:
             # print(lattice.generateStateString())
             states.append(lattice.generateStateString())
-            # energies.append(currentEnergy)
-            # probabilities.append(currentStateProbability)
+        #     energies.append(currentEnergy)
+        #     probabilities.append(currentStateProbability)
         # else:
         #     energies.append(currentEnergy)
         #     probabilities.append(currentStateProbability)

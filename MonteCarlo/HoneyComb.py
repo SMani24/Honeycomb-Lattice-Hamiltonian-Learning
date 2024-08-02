@@ -179,8 +179,8 @@ class HoneyComb:
         for vertex in vertices:
             energy += self.__calculateVertexEnergy(vertex)
 
-        for plaquette in plaquettes:
-            energy += self.__calculatePlaquetteEnergy(plaquette)
+        # for plaquette in plaquettes:
+        #     energy += self.__calculatePlaquetteEnergy(plaquette)
         
         return energy
     
