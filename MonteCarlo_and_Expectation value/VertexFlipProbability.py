@@ -41,7 +41,7 @@ def drawPlot(x, y, outputPath, XLabel='', YLabel='', title=''):
 
 def run():
     singleQubitErrorProbabilities = [0, 0.05, 0.1, 0.15, 0.2]
-    for latticeSize in [12]:
+    for latticeSize in [8]:
         for beta in [0.5]:
             vertexFlipProbability = []
             for singleQubitErrorProbability in singleQubitErrorProbabilities:

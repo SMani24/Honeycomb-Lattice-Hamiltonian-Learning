@@ -98,9 +98,8 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
         updateVertexExpectationValue(lattice, vertexExpectationValues)
         updateLinkExpectationValue(lattice, linkExpectationValues)
 
-        if i % 100 == 0:
-                    print(f"<A> Progress: ConfigNum = {configNumber}/ state = {len(states)} vertex expectation value calculated")
-                    print(f"<A> progress: ConfigNum = {configNumber}/ state = {len(states)} link expectation value calculated")
+        if i % 1000 == 0:
+                    print(f"<A> Progress: ConfigNum = {configNumber} {int(i / len(states) * 100)}%")
     
     filePath = f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
     statesNumberFilePath = OUTPUT_DIR + filePath + f"numberOfStates_configNumber={configNumber}.csv"

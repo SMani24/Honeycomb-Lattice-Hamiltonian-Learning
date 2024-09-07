@@ -13,7 +13,7 @@ NUMBER_OF_SAMPELS = 100000
 
 LATTICE_SIZES = [8]
 BETAS = [0.5]
-SINGLE_QUBIT_ERROR_PROBABILITES = [0.15, 0.2]
+SINGLE_QUBIT_ERROR_PROBABILITES = [0.0, 0.05, 0.1]
 
 if __name__ == "__main__":
     threadNumber = int(input("Enter the number of threades to be used: "))
