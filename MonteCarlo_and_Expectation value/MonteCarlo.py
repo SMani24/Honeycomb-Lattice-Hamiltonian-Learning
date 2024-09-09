@@ -42,7 +42,10 @@ def updateLinkExpectationValue(lattice, linkExpectationValue):
 
 def addOneMoreLayer(lattice, states, probabilitySum):
     newStates = set()
+    cnt = 0
     for vertex in lattice.getVertices():
+        print(f"{cnt} Vertices Done!")
+        cnt += 1
         for state in states:
             lattice.loadState(state)
             lattice.applyStabilizerOperatorA(vertex)
@@ -52,6 +55,8 @@ def addOneMoreLayer(lattice, states, probabilitySum):
                 probabilitySum += lattice.getProbability()
     
     states |= newStates
+
+    del newStates
     return probabilitySum
 
 def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbability=0, 
