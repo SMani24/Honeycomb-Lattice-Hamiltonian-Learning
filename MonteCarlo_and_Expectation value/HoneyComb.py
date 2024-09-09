@@ -137,6 +137,9 @@ class HoneyComb:
     def getVertexCount(self):
         return self.__vertexCount
     
+    def getVertices(self):
+        return self.__vertices
+    
     def getPlaquetteCount(self):
         return self.__plaquetteCount
     

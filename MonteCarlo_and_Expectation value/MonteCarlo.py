@@ -40,6 +40,20 @@ def updateLinkExpectationValue(lattice, linkExpectationValue):
     for i in range(len(linkExpectationValue)):
         linkExpectationValue[i] += tmp[i]
 
+def addOneMoreLayer(lattice, states, probabilitySum):
+    newStates = set()
+    for vertex in lattice.getVertices():
+        for state in states:
+            lattice.loadState(state)
+            lattice.applyStabilizerOperatorA(vertex)
+            newState = lattice.generateStateString()
+            if not ((newState in states) or (newState in newStates)):
+                newStates.add(newState)
+                probabilitySum += lattice.getProbability()
+    
+    states |= newStates
+    return probabilitySum
+
 def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbability=0, 
                numOfItertions=100000, numOfSamples=10000, configNumber=-1):
     T = 10000
@@ -91,6 +105,9 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
             print(f"MC progress: ConfigNum = {configNumber} progress: {int(iteration / (numOfItertions + numOfSamples) * 100)}%")
     # filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}"
     
+    # Adding one more layer of states:
+    probabilitySum = addOneMoreLayer(lattice, states, probabilitySum)
+
     lattice.setAmplitudeDenominator(probabilitySum ** 0.5)
     for i, state in enumerate(states):
         lattice.loadState(state)

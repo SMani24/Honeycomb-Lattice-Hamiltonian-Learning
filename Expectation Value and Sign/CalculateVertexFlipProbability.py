@@ -32,7 +32,6 @@ for latticeSize in LATTICE_SIZE:
             vertexFlipProbability /= len(CONFIG_RANGE)
             vertexFlipProbability *= 1 / vertexFlipProbability[0]
             vertexFlipProbability = (1 - vertexFlipProbability) / 2
-
             
             plt.plot(vertexFlipProbability, SINGLE_QUBIT_ERROR_PROBABILITIES, marker='o')
             plt.xlabel("Vertex Flip Probability, p")
