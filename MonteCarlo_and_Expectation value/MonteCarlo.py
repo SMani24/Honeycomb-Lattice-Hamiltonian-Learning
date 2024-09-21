@@ -3,6 +3,7 @@
 # Ali Kookani
 
 import HoneyComb
+import Utils
 import statistics
 import math
 import random
@@ -13,32 +14,14 @@ import math
 import os
 
 MIN_T = 0.3
+NUMBER_OF_STATES_IN_EACH_FILE = int(1e3)
 
 OUTPUT_DIR = f"./ExpectationValues/"
-
-def saveData(data, filePath):
-    os.makedirs(os.path.dirname(filePath), exist_ok=True)
-    data = np.array(data)
-    np.savetxt(filePath, data, delimiter=',', fmt='%s')
 
 def probabilityOfSimulatedAnnealing(initialEnergy, postEnergy, T):
     if postEnergy <= initialEnergy:
         return 1
     return math.exp(-(postEnergy - initialEnergy) / T)
-
-def updateVertexExpectationValue(lattice, vertexExpectationValue):
-    # print(lattice.calculateVertexExpectationValues())
-    tmp = lattice.calculateVertexExpectationValues()
-    # print(max(tmp))
-    for i in range(len(vertexExpectationValue)):
-        vertexExpectationValue[i] += tmp[i]
-
-def updateLinkExpectationValue(lattice, linkExpectationValue):
-    # print(lattice.calculateLinkExpectationValues())
-    tmp = lattice.calculateLinkExpectationValues()
-    # print(max(tmp))
-    for i in range(len(linkExpectationValue)):
-        linkExpectationValue[i] += tmp[i]
 
 def addOneMoreLayer(lattice, states, probabilitySum):
     newStates = set()
@@ -66,10 +49,6 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
     print(TDiffrence)
     lattice = HoneyComb.HoneyComb(latticeSize=latticeSize, beta=beta,
                                        lambdaZFilePath=lambdaZFilePath)
-    
-    # Initiating the expectation value arrays
-    vertexExpectationValues = [0] * lattice.getVertexCount()
-    linkExpectationValues = [0] * lattice.getLinkCount()
 
     currentEnergy = lattice.energy
     probabilitySum = 0
@@ -114,25 +93,33 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
     probabilitySum = addOneMoreLayer(lattice, states, probabilitySum)
 
     lattice.setAmplitudeDenominator(probabilitySum ** 0.5)
-    for i, state in enumerate(states):
-        lattice.loadState(state)
-        
-        updateVertexExpectationValue(lattice, vertexExpectationValues)
-        updateLinkExpectationValue(lattice, linkExpectationValues)
-
-        if i % 1000 == 0:
-                    print(f"<A> Progress: ConfigNum = {configNumber} {int(i / len(states) * 100)}%")
     
-    filePath = f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
-    statesNumberFilePath = OUTPUT_DIR + filePath + f"numberOfStates_configNumber={configNumber}.csv"
-    vertex_A_ExpectationValueFilePath = OUTPUT_DIR + filePath + f"vertex_A_ExpectationValue_configNumber={configNumber}.csv"
-    link_A_ExpectationValueFilePath = OUTPUT_DIR + filePath + f"link_A_ExpectationValue_configNumber={configNumber}.csv"
-    print(filePath)
-    saveData(vertexExpectationValues, vertex_A_ExpectationValueFilePath)
-    print("Vertex expectation values saved!")
-    saveData(linkExpectationValues, link_A_ExpectationValueFilePath)
-    print("Link expectation values saved")
-    saveData([len(states)], statesNumberFilePath)
+    tmpStates = [f"{probabilitySum}"]
+    batch = 0
+    for idx, state in enumerate(states):
+        if idx % NUMBER_OF_STATES_IN_EACH_FILE == 0:
+            if len(tmpStates) > 1:
+                filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batch}.csv"
+                batch += 1
+                Utils.saveData(filePath, tmpStates, format='%s')
+            tmpStates = [f"{probabilitySum}"]
+        tmpStates.append(state)
+    
+    if len(tmpStates) > 1:
+        filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batch}.csv"
+        batch += 1
+        Utils.saveData(filePath, tmpStates, format='%s')
+    
+    # filePath = f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
+    # statesNumberFilePath = OUTPUT_DIR + filePath + f"numberOfStates_configNumber={configNumber}.csv"
+    # vertex_A_ExpectationValueFilePath = OUTPUT_DIR + filePath + f"vertex_A_ExpectationValue_configNumber={configNumber}.csv"
+    # link_A_ExpectationValueFilePath = OUTPUT_DIR + filePath + f"link_A_ExpectationValue_configNumber={configNumber}.csv"
+    # print(filePath)
+    # saveData(vertexExpectationValues, vertex_A_ExpectationValueFilePath)
+    # print("Vertex expectation values saved!")
+    # saveData(linkExpectationValues, link_A_ExpectationValueFilePath)
+    # print("Link expectation values saved")
+    # saveData([len(states)], statesNumberFilePath)
     # print(statistics.variance(energies))
     # saveData(states, filePath + ".csv")
 
@@ -147,8 +134,6 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
     del states
     del energies
     del probabilities
-    del linkExpectationValues
-    del vertexExpectationValues
 
 
 def multithreadMonteCarlo(job):

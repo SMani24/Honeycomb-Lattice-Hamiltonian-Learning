@@ -133,6 +133,9 @@ class HoneyComb:
     # getters:
     def getLinkCount(self):
         return self.__linkCount
+
+    def getAmplitude(self):
+        return self.__amplitude
     
     def getVertexCount(self):
         return self.__vertexCount
@@ -319,6 +322,7 @@ class HoneyComb:
                     link.setPhase(-1)
                 if char == '1':
                     link.setPhase(1)
+        self.__calculateAmplitude()
 
     def setAmplitudeDenominator(self, denominator):
         self.__amplitudeDenominator = denominator

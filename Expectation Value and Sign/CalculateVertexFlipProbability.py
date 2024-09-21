@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 BETA = [0.5]
 LATTICE_SIZE = [8]
-CONFIG_RANGE = range(1, 2)
+CONFIG_RANGE = range(1)
 SINGLE_QUBIT_ERROR_PROBABILITIES = [0.0, 0.05, 0.1, 0.15, 0.2]
 
 # Loading the data:
@@ -30,7 +30,7 @@ for latticeSize in LATTICE_SIZE:
                 print(f"Config={configNumber} done!!")
             
             vertexFlipProbability /= len(CONFIG_RANGE)
-            vertexFlipProbability *= 1 / vertexFlipProbability[0]
+            # vertexFlipProbability *= 1 / vertexFlipProbability[0]
             vertexFlipProbability = (1 - vertexFlipProbability) / 2
             
             plt.plot(vertexFlipProbability, SINGLE_QUBIT_ERROR_PROBABILITIES, marker='o')
