@@ -26,6 +26,7 @@ def calculateExpectationValue(statesFilePath, outputFilePath, latticeSize, beta,
     """
     
     states = Utils.loadData(statesFilePath)
+    print(f"<A> Progress: BatchNumber = {batchNumber} file loaded")
     probabilitySum = float(states[0])
     
     # Initiating the lattice
@@ -37,7 +38,7 @@ def calculateExpectationValue(statesFilePath, outputFilePath, latticeSize, beta,
     linkExpectationValues = [0] * lattice.getLinkCount()
 
     for stateNumber, state in enumerate(states):
-        if stateNumber == 1:
+        if stateNumber == 0:
             continue
         lattice.loadState(state)
         
@@ -47,7 +48,12 @@ def calculateExpectationValue(statesFilePath, outputFilePath, latticeSize, beta,
         if stateNumber % 1000 == 0:
             print(f"<A> Progress: BatchNumber = {batchNumber} {int(stateNumber / len(states) * 100)}%")
     
-    Utils.saveData(outputFilePath, [vertexExpectationValues, linkExpectationValues])
+    vertexExpectationValuesFilePath = outputFilePath + "vertexExpectationValues.csv"
+    linkExpectationValuesFilePath = outputFilePath + "linkExpectationValues.csv"
+
+    Utils.saveData(vertexExpectationValuesFilePath, vertexExpectationValues)
+    Utils.saveData(linkExpectationValuesFilePath, linkExpectationValues)
+    print(f"<A> Progress: BatchNumber = {batchNumber} expectation values saved succesfuly")
     
     del lattice
     del states

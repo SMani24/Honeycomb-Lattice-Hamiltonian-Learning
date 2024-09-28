@@ -14,9 +14,9 @@ NUMBER_OF_SAMPLES = int(1e3)
 
 LATTICE_SIZES = [8]
 BETAS = [0.5]
-SINGLE_QUBIT_ERROR_PROBABILITES = [0.0, 0.05, 0.1, 0.15, 0.2]
-CONFIG_NUMBER_RANGE = range(1)
-BATCH_RANGE = range(125)
+SINGLE_QUBIT_ERROR_PROBABILITES = [0.0]
+CONFIG_NUMBER_RANGE = range(10)
+BATCH_RANGE = range(300)
 
 if __name__ == "__main__":
     threadNumber = int(input("Enter the number of threades to be used: "))
@@ -49,7 +49,7 @@ if __name__ == "__main__":
                         lambdaZFilePath = f"./LambdaConfigs/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/VertexLmabdaConfig={configNumber}.csv"
                         for batchNumber in BATCH_RANGE:
                             statesFilePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}.csv"
-                            outputFilePath = f"./ExpectationValues/PartialExpectationValue/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}.csv"
+                            outputFilePath = f"./ExpectationValues/PartialExpectationValue/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}_"
                             if os.path.isfile(statesFilePath) == False:
                                 continue
                             poolJobs.append((statesFilePath, outputFilePath, latticeSize, beta, lambdaZFilePath, batchNumber))
