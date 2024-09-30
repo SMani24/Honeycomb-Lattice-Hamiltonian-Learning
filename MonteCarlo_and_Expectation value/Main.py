@@ -15,7 +15,7 @@ NUMBER_OF_SAMPLES = int(1e3)
 LATTICE_SIZES = [8]
 BETAS = [0.5]
 SINGLE_QUBIT_ERROR_PROBABILITES = [0.0]
-CONFIG_NUMBER_RANGE = range(10)
+CONFIG_NUMBER_RANGE = range(1)
 BATCH_RANGE = range(300)
 
 if __name__ == "__main__":
@@ -50,7 +50,10 @@ if __name__ == "__main__":
                         for batchNumber in BATCH_RANGE:
                             statesFilePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}.csv"
                             outputFilePath = f"./ExpectationValues/PartialExpectationValue/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}_"
-                            if os.path.isfile(statesFilePath) == False:
+                            vertexExpectationValuesFilePath = outputFilePath + "vertexExpectationValues.csv"
+                            linkExpectationValuesFilePath = outputFilePath + "linkExpectationValues.csv"
+                            
+                            if os.path.isfile(statesFilePath) == False or (os.path.isfile(vertexExpectationValuesFilePath ) == True and os.path.isfile(linkExpectationValuesFilePath) == True):
                                 continue
                             poolJobs.append((statesFilePath, outputFilePath, latticeSize, beta, lambdaZFilePath, batchNumber))
         
