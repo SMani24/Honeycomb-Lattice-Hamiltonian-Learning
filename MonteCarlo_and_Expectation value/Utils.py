@@ -1,8 +1,11 @@
+# In the name of God
+# SMani24
 
 import numpy as np
 import csv
 import ast
 import os
+
 class Numeration:
     def __init__(self, latticeSize):
         self.linkCount = 3 * (latticeSize * latticeSize)
@@ -34,8 +37,8 @@ class Numeration:
                 myDict[key] = value
         return myDict
 
-def loadData(filePath):
-    data = np.genfromtxt(filePath, delimiter=',', dtype=str)
+def loadData(filePath, dtype=str):
+    data = np.genfromtxt(filePath, delimiter=',', dtype=dtype)
     return data
 
 def calculateOccurrences(states):
@@ -99,7 +102,7 @@ def applyStabilizerOperatorA(vertexId, state, numeration):
         newState = applySigmaX(linkId, newState)
     return newState
 
-def saveData(filePath, data, format='%f'):
+def saveData(filePath, data, format='%20f'):
     # Making the necessery directories:
     os.makedirs(os.path.dirname(filePath), exist_ok=True)
     data = np.array(data)

@@ -4,6 +4,8 @@
 import HoneyComb
 import Utils
 
+FLOAT_SAVING_FORMAT = '%.20f'
+
 def updateVertexExpectationValue(lattice, vertexExpectationValue):
     # print(lattice.calculateVertexExpectationValues())
     tmp = lattice.calculateVertexExpectationValues()
@@ -43,7 +45,7 @@ def calculateExpectationValue(statesFilePath, outputFilePath, latticeSize, beta,
         lattice.loadState(state)
         
         updateVertexExpectationValue(lattice, vertexExpectationValues)
-        updateLinkExpectationValue(lattice, linkExpectationValues)
+        # updateLinkExpectationValue(lattice, linkExpectationValues)
 
         if stateNumber % 1000 == 0:
             print(f"<A> Progress: BatchNumber = {batchNumber} {int(stateNumber / len(states) * 100)}%")
@@ -51,8 +53,8 @@ def calculateExpectationValue(statesFilePath, outputFilePath, latticeSize, beta,
     vertexExpectationValuesFilePath = outputFilePath + "vertexExpectationValues.csv"
     linkExpectationValuesFilePath = outputFilePath + "linkExpectationValues.csv"
 
-    Utils.saveData(vertexExpectationValuesFilePath, vertexExpectationValues)
-    Utils.saveData(linkExpectationValuesFilePath, linkExpectationValues)
+    Utils.saveData(vertexExpectationValuesFilePath, vertexExpectationValues, FLOAT_SAVING_FORMAT)
+    # Utils.saveData(linkExpectationValuesFilePath, linkExpectationValues, FLOAT_SAVING_FORMAT)
     print(f"<A> Progress: BatchNumber = {batchNumber} expectation values saved succesfuly")
     
     del lattice
