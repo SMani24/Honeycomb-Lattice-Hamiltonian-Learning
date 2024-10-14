@@ -4,7 +4,7 @@
 import HoneyComb
 import Utils
 
-FLOAT_SAVING_FORMAT = '%.20f'
+FLOAT_SAVING_FORMAT = '%.40f'
 
 def updateVertexExpectationValue(lattice, vertexExpectationValue):
     # print(lattice.calculateVertexExpectationValues())

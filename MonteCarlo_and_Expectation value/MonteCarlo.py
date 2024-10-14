@@ -35,6 +35,9 @@ def addOneMoreLayer(lattice, states, probabilitySum):
             newState = lattice.generateStateString()
             if not ((newState in states) or (newState in newStates)):
                 newStates.add(newState)
+                """
+                    Only need to sum over them if they are added
+                """
                 probabilitySum += lattice.getProbability()
     
     states |= newStates
@@ -102,7 +105,7 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
                 filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batch}.csv"
                 batch += 1
                 Utils.saveData(filePath, tmpStates, format='%s')
-            tmpStates = [f"{probabilitySum}"]
+            tmpStates = [f"{probabilitySum:.40f}"]
         tmpStates.append(state)
     
     if len(tmpStates) > 1:
