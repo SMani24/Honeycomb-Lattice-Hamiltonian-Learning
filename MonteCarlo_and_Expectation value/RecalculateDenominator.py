@@ -1,12 +1,14 @@
 # In the name of God
 # SMani24
 
+
+from typing import List, Tuple
 import HoneyComb
 import Utils
 
 FLOAT_SAVING_FORMAT = '%.40f'
 
-def UniteFiles(tmpOutputFilePaths: list[str], statesFilePaths: list[str]): #TODO: ask Moein how to distinguish voids
+def UniteFiles(tmpOutputFilePaths: List[str], statesFilePaths: List[str]) -> None: #TODO: ask Moein how to distinguish voids
     probabilitySum = 0
     for tmpOutputFilePath in tmpOutputFilePaths:
         partialProbabilitySum = Utils.loadData(filePath=tmpOutputFilePath, dtype=FLOAT_SAVING_FORMAT)
@@ -20,7 +22,7 @@ def UniteFiles(tmpOutputFilePaths: list[str], statesFilePaths: list[str]): #TODO
 
 def RecalculateDenominator(statesFilePath: str, latticeSize: int, 
                            beta: int, lambdaZFilePath: str,
-                           batchNumber: int, tmpOutPutDir: str): #TODO: ask Moein how to distinguish voids
+                           batchNumber: int, tmpOutPutDir: str) -> None: #TODO: ask Moein how to distinguish voids
     """
         Recalculates the denominator stored in the up batch file in case
         of an error. Note that it only partially calculates the denominator
@@ -44,7 +46,7 @@ def RecalculateDenominator(statesFilePath: str, latticeSize: int,
 
     Utils.saveData(tmpOutPutDir, partialProbabilitySum, format=FLOAT_SAVING_FORMAT)
 
-def multiThreadRecalculateDenominator(job):
+def multiThreadRecalculateDenominator(job: Tuple[str, int, int, str, int, str]) -> None:
     statesFilePath, latticeSize, beta, lambdaZFilePath, batchNumber, tmpOutputFilePath = job
     RecalculateDenominator(statesFilePath=statesFilePath, 
                            latticeSize=latticeSize,
