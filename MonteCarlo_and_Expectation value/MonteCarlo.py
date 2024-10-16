@@ -1,17 +1,11 @@
 # In the name of God
 # SMani24
-# Ali Kookani
 
-import HoneyComb
+import math
 import Utils
-import statistics
-import math
 import random
+import HoneyComb
 import matplotlib.pyplot as plt
-import csv
-import numpy as np
-import math
-import os
 
 MIN_T = 0.3
 NUMBER_OF_STATES_IN_EACH_FILE = int(1e3)
@@ -25,22 +19,29 @@ def probabilityOfSimulatedAnnealing(initialEnergy, postEnergy, T):
 
 def addOneMoreLayer(lattice, states, probabilitySum):
     newStates = dict()
+    statesCopy = states.copy()
     cnt = 0
     for vertex in lattice.getVertices():
         print(f"{cnt} Vertices Done!")
         cnt += 1
-        for state in states:
+        for stateNumber, state in enumerate(statesCopy):
+            if stateNumber % 10000 == 0:
+                print(f"{stateNumber} states Done!, len(states)={len(states)}")
             lattice.loadState(state)
             lattice.applyStabilizerOperatorA(vertex)
             newState = lattice.generateStateString()
-            if not ((newState in states) or (newState in newStates)):
-                newStates[newState] = lattice.getProbability()
+            if not newState in states:
+                states.add(newState)
+                probabilitySum += lattice.getProbability()
+            # if not ((newState in states) or (newState in newStates)):
+            #     newStates[newState] = lattice.getProbability()
 
-    for state, probability in newStates.items():
-        if not state in states:
-            states.add(state)
-            probabilitySum += probability
+    # for state, probability in newStates.items():
+    #     if not state in states:
+    #         states.add(state)
+    #         probabilitySum += probability
     
+    del statesCopy
     del newStates
     return probabilitySum
 

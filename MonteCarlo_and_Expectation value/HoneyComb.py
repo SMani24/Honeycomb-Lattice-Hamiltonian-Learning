@@ -1,15 +1,15 @@
 # In the name of God
 # SMani24
-# Ali Kookani
 
 import ast
+import csv
+import zlib
 import Link
+import math
+import random
 import Vertex
 import Plaquette
-import random
 import numpy as np
-import math
-import csv
 
 class HoneyComb:
     def __init__(self, latticeSize, beta, lambdaZFilePath=""):
@@ -301,13 +301,14 @@ class HoneyComb:
                 stateString += '1'
             if link.getPhase() == -1:
                 stateString += '0'
-        return stateString
+        return zlib.compress(stateString.encode())
     
     def loadState(self, state):
         """
             Loads the given state to the lattice
             (sets the values of spins and phase of every link)
         """
+        state = zlib.decompress(state).decode()
         for i, char in enumerate(state):
             linkNumber = int(i / 2)
             link = self.getLinkByNumber(linkNumber)
