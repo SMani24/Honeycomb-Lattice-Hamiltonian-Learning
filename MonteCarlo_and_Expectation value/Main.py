@@ -13,8 +13,8 @@ import CalculateVertexFlipProbability
 
 startTime = time.time()
 
-NUMBER_OF_ITERATIONS = int(1e4)
-NUMBER_OF_SAMPLES = int(1e3)
+NUMBER_OF_ITERATIONS = int(1e6)
+NUMBER_OF_SAMPLES = int(1e6)
 
 FLOAT_SAVING_FORMAT = '%.40f'
 
@@ -111,39 +111,46 @@ if __name__ == "__main__":
 
         case 'D':
             TMPDir = f"./TMP/Denominator/"
-            statesFilePaths = []
-            tmpOutputFilePaths = []
 
             for latticeSize in LATTICE_SIZES:
                 for beta in BETAS:
                     for singleQubitErrorProbability in SINGLE_QUBIT_ERROR_PROBABILITES:
                         for configNumber in CONFIG_NUMBER_RANGE:
-                            MCOutputDir = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/\
-                                singleQubitErrorProbability={singleQubitErrorProbability}/\
-                                configNumber={configNumber}/"
-                            lambdaZFilePath = f"./LambdaConfigs/latticeSize={latticeSize}/\
-                                Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/\
-                                VertexLmabdaConfig={configNumber}.csv"
+                            MCOutputDir = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/"
+                            lambdaZFilePath = f"./LambdaConfigs/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/VertexLmabdaConfig={configNumber}.csv"
                             for batchNumber in BATCH_RANGE:
                                 statesFilePath = MCOutputDir + f"Batch={batchNumber}.csv"
-                                tmpOutputFilePath = TMPDir + f"latticeSize={latticeSize}/\
-                                Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/\
-                                configNumber={configNumber}/Batch={batchNumber}.csv"
+                                tmpOutputFilePath = TMPDir + f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}.csv"
                                 
                                 # Making sure the calculation hasn't been done before
-                                if os.path.isfile(statesFilePath) == False\
-                                    or os.path.isfile(tmpOutputFilePath) == True:
+                                if os.path.isfile(statesFilePath) == False:
                                     continue
-
-                                statesFilePaths.append(statesFilePath)
-                                tmpOutputFilePaths.append(tmpOutputFilePath)
-                                poolJobs.append(statesFilePath, latticeSize, beta, 
-                                                lambdaZFilePath, batchNumber, tmpOutputFilePath)
+                                if os.path.isfile(tmpOutputFilePath) == False:
+                                    poolJobs.append((statesFilePath, latticeSize, beta, 
+                                                    lambdaZFilePath, batchNumber, tmpOutputFilePath))
+                                
             # Doing the recalculation
             pool.map(RecalculateDenominator.multiThreadRecalculateDenominator, poolJobs) 
             
             # Uniting the files
-            RecalculateDenominator.UniteFiles(tmpOutputFilePaths=tmpOutputFilePaths,
+            for latticeSize in LATTICE_SIZES:
+                for beta in BETAS:
+                    for singleQubitErrorProbability in SINGLE_QUBIT_ERROR_PROBABILITES:
+                        for configNumber in CONFIG_NUMBER_RANGE:
+                            MCOutputDir = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/"
+                            statesFilePaths = []
+                            tmpOutputFilePaths = []
+                            for batchNumber in BATCH_RANGE:
+                                statesFilePath = MCOutputDir + f"Batch={batchNumber}.csv"
+                                tmpOutputFilePath = TMPDir + f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}.csv"
+                                
+                                # Making sure the calculation hasn't been done before
+                                if os.path.isfile(statesFilePath) == False:
+                                    continue
+                                if os.path.isfile(tmpOutputFilePath) == True:
+                                    statesFilePaths.append(statesFilePath)
+                                    tmpOutputFilePaths.append(tmpOutputFilePath)
+                            RecalculateDenominator.UniteFiles(tmpOutputFilePaths=tmpOutputFilePaths,
                                               statesFilePaths=statesFilePaths)
             
             finishTime = time.time()

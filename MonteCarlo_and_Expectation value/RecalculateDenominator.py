@@ -2,27 +2,28 @@
 # SMani24
 
 
-from typing import List, Tuple
-import HoneyComb
 import Utils
+import HoneyComb
+from typing import List, Tuple
 
 FLOAT_SAVING_FORMAT = '%.40f'
 
-def UniteFiles(tmpOutputFilePaths: List[str], statesFilePaths: List[str]) -> None: #TODO: ask Moein how to distinguish voids
+def UniteFiles(tmpOutputFilePaths: List[str], statesFilePaths: List[str]) -> None:
     probabilitySum = 0
     for tmpOutputFilePath in tmpOutputFilePaths:
-        partialProbabilitySum = Utils.loadData(filePath=tmpOutputFilePath, dtype=FLOAT_SAVING_FORMAT)
+        partialProbabilitySum = float(Utils.loadData(filePath=tmpOutputFilePath))
         probabilitySum += partialProbabilitySum
-    
-    for statesFilePath in statesFilePaths:
-        states = Utils.loadData(filePath=statesFilePath)
-        states[0] = f"{probabilitySum:.40f}"
 
+    for cnt, statesFilePath in enumerate(statesFilePaths):
+        states = Utils.loadData(filePath=statesFilePath)
+        # print(states[0])
+        states[0] = f"{probabilitySum:.40f}"
         Utils.saveData(filePath=statesFilePath, data=states)
+        print(f"{cnt} batches done!")
 
 def RecalculateDenominator(statesFilePath: str, latticeSize: int, 
                            beta: int, lambdaZFilePath: str,
-                           batchNumber: int, tmpOutPutDir: str) -> None: #TODO: ask Moein how to distinguish voids
+                           batchNumber: int, tmpOutPutDir: str) -> None:
     """
         Recalculates the denominator stored in the up batch file in case
         of an error. Note that it only partially calculates the denominator
@@ -45,6 +46,7 @@ def RecalculateDenominator(statesFilePath: str, latticeSize: int,
         partialProbabilitySum += lattice.getProbability()
 
     Utils.saveData(tmpOutPutDir, partialProbabilitySum, format=FLOAT_SAVING_FORMAT)
+    print(f"Recalculation of Denominator: BatchNumber = {batchNumber} finished!")
 
 def multiThreadRecalculateDenominator(job: Tuple[str, int, int, str, int, str]) -> None:
     statesFilePath, latticeSize, beta, lambdaZFilePath, batchNumber, tmpOutputFilePath = job

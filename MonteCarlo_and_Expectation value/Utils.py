@@ -102,9 +102,11 @@ def applyStabilizerOperatorA(vertexId, state, numeration):
         newState = applySigmaX(linkId, newState)
     return newState
 
-def saveData(filePath, data, format='%20f'):
+def saveData(filePath, data, format='%s', delimiter='\n'):
     # Making the necessery directories:
     os.makedirs(os.path.dirname(filePath), exist_ok=True)
+    if type(data) != list or type(data) != tuple:
+        data = [data]
     data = np.array(data)
     np.savetxt(filePath, data, delimiter=',', fmt=format)
 

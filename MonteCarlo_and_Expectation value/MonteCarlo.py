@@ -24,7 +24,7 @@ def probabilityOfSimulatedAnnealing(initialEnergy, postEnergy, T):
     return math.exp(-(postEnergy - initialEnergy) / T)
 
 def addOneMoreLayer(lattice, states, probabilitySum):
-    newStates = set()
+    newStates = dict()
     cnt = 0
     for vertex in lattice.getVertices():
         print(f"{cnt} Vertices Done!")
@@ -34,14 +34,13 @@ def addOneMoreLayer(lattice, states, probabilitySum):
             lattice.applyStabilizerOperatorA(vertex)
             newState = lattice.generateStateString()
             if not ((newState in states) or (newState in newStates)):
-                newStates.add(newState)
-                """
-                    Only need to sum over them if they are added
-                """
-                probabilitySum += lattice.getProbability()
-    
-    states |= newStates
+                newStates[newState] = lattice.getProbability()
 
+    for state, probability in newStates.items():
+        if not state in states:
+            states.add(state)
+            probabilitySum += probability
+    
     del newStates
     return probabilitySum
 
@@ -92,8 +91,9 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
             print(f"MC progress: ConfigNum = {configNumber} progress: {int(iteration / (numOfItertions + numOfSamples) * 100)}%")
     # filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}"
     
-    # Adding one more layer of states:
-    probabilitySum = addOneMoreLayer(lattice, states, probabilitySum)
+    # Adding more layers of states:
+    for _ in range(2):
+        probabilitySum = addOneMoreLayer(lattice, states, probabilitySum)
 
     lattice.setAmplitudeDenominator(probabilitySum ** 0.5)
     
