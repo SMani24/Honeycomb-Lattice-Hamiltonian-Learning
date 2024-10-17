@@ -3,7 +3,7 @@
 
 import Utils
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 COEFFICIENT = [12496236.0/12496236.0000000000000000000000000000000000000000
@@ -39,9 +39,9 @@ def drawPlot(BETA, LATTICE_SIZE, CONFIG_RANGE, SINGLE_QUBIT_ERROR_PROBABILITIES)
                 print(vertexFlipProbability)
                 
 
-                plt.plot(vertexFlipProbability, SINGLE_QUBIT_ERROR_PROBABILITIES, marker='o')
-                plt.xlabel("Vertex Flip Probability, p")
-                plt.ylabel("Single Qubit Error Probability, er")
+                # plt.plot(vertexFlipProbability, SINGLE_QUBIT_ERROR_PROBABILITIES, marker='o')
+                # plt.xlabel("Vertex Flip Probability, p")
+                # plt.ylabel("Single Qubit Error Probability, er")
 
-                plotFilePath = f"./Plots/Beta={beta}.png"
-                plt.savefig(plotFilePath)
+                # plotFilePath = f"./Plots/Beta={beta}.png"
+                # plt.savefig(plotFilePath)

@@ -5,7 +5,7 @@ import math
 import Utils
 import random
 import HoneyComb
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 MIN_T = 0.3
 NUMBER_OF_STATES_IN_EACH_FILE = int(1e3)
