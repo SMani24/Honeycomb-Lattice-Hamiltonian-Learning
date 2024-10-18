@@ -1,6 +1,8 @@
 # In the name of God
 # SMani24
 
+import base64
+import zlib
 import numpy as np
 import csv
 import ast
@@ -102,12 +104,31 @@ def applyStabilizerOperatorA(vertexId, state, numeration):
         newState = applySigmaX(linkId, newState)
     return newState
 
-def saveData(filePath, data, format='%s', delimiter='\n'):
+def saveData(filePath, data, format='%s', delimiter=','):
     # Making the necessery directories:
     os.makedirs(os.path.dirname(filePath), exist_ok=True)
     if type(data) != list or type(data) != tuple:
         data = [data]
     data = np.array(data)
-    np.savetxt(filePath, data, delimiter=',', fmt=format)
+    np.savetxt(filePath, data, delimiter=delimiter, fmt=format)
 
     del data
+
+def convertFromZlibToBase64(compressedString):
+    """
+        Converts the compressedString with zlib library to a 
+        base64 text friendly format
+    """
+    return base64.b64encode(compressedString).decode('utf-8')
+
+def saveCompressedData(filePath, compressedData):
+    """
+        Saves the data(states) that are compressed using the zlib library
+    """
+    with open(filePath, mode='w', newline='') as outputFile:
+        writer = csv.writer(outputFile)
+        for compressedString in compressedData:
+            compressedString = convertFromZlibToBase64(compressedString)
+            writer.writerow([compressedString])
+
+#TODO: write loadCompressedData!

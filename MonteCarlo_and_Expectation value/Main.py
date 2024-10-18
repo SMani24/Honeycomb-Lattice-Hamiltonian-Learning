@@ -13,7 +13,7 @@ import CalculateVertexFlipProbability
 
 startTime = time.time()
 
-NUMBER_OF_ITERATIONS = int(1e4)
+NUMBER_OF_ITERATIONS = int(1e6)
 NUMBER_OF_SAMPLES = int(1e4)
 
 FLOAT_SAVING_FORMAT = '%.40f'

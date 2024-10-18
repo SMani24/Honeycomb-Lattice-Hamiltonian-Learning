@@ -8,7 +8,7 @@ import HoneyComb
 # import matplotlib.pyplot as plt
 
 MIN_T = 0.3
-NUMBER_OF_STATES_IN_EACH_FILE = int(1e3)
+NUMBER_OF_STATES_IN_EACH_FILE = int(1e4)
 
 OUTPUT_DIR = f"./ExpectationValues/"
 
@@ -93,26 +93,29 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
     # filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}"
     
     # Adding more layers of states:
-    for _ in range(2):
+    for _ in range(0):
         probabilitySum = addOneMoreLayer(lattice, states, probabilitySum)
 
     lattice.setAmplitudeDenominator(probabilitySum ** 0.5)
     
-    tmpStates = [f"{probabilitySum}"]
+    probabilitySumFilePath = filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/ProbabilitySum.csv"
+    Utils.saveData(filePath=probabilitySumFilePath, data=f"{probabilitySum:.40f}")
+
+    tmpStates = []
     batch = 0
     for idx, state in enumerate(states):
         if idx % NUMBER_OF_STATES_IN_EACH_FILE == 0:
             if len(tmpStates) > 1:
                 filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batch}.csv"
                 batch += 1
-                Utils.saveData(filePath, tmpStates, format='%s')
-            tmpStates = [f"{probabilitySum:.40f}"]
+                Utils.saveCompressedData(filePath, tmpStates)
+            tmpStates = []
         tmpStates.append(state)
     
     if len(tmpStates) > 1:
         filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batch}.csv"
         batch += 1
-        Utils.saveData(filePath, tmpStates, format='%s')
+        Utils.saveCompressedData(filePath, tmpStates)
     
     # filePath = f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
     # statesNumberFilePath = OUTPUT_DIR + filePath + f"numberOfStates_configNumber={configNumber}.csv"
@@ -137,6 +140,7 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
     # plt.savefig(filePath + ".png")
     del states
     del energies
+    del tmpStates
     del probabilities
 
 
