@@ -2,6 +2,7 @@
 # SMani24
 
 import base64
+from typing import List
 import zlib
 import numpy as np
 import csv
@@ -104,7 +105,7 @@ def applyStabilizerOperatorA(vertexId, state, numeration):
         newState = applySigmaX(linkId, newState)
     return newState
 
-def saveData(filePath, data, format='%s', delimiter=','):
+def saveData(filePath: str, data, format='%s', delimiter=',') -> None:
     # Making the necessery directories:
     os.makedirs(os.path.dirname(filePath), exist_ok=True)
     if type(data) != list or type(data) != tuple:
@@ -114,14 +115,22 @@ def saveData(filePath, data, format='%s', delimiter=','):
 
     del data
 
-def convertFromZlibToBase64(compressedString):
+def convertFromZlibToBase64(compressedString: bytes) -> str:
     """
         Converts the compressedString with zlib library to a 
         base64 text friendly format
     """
     return base64.b64encode(compressedString).decode('utf-8')
 
-def saveCompressedData(filePath, compressedData):
+def convertFromBase64ToZlib(compressedString: str) -> bytes:
+    """
+        Converts the encoded data with Base64 to zlib format
+    """
+    decodedData: bytes = base64.b64decode(compressedString)
+    string: str = zlib.decompress(decodedData).decode('utf-8')
+    return zlib.compress(string.encode())
+
+def saveCompressedData(filePath: str, compressedData: List[bytes]):
     """
         Saves the data(states) that are compressed using the zlib library
     """
@@ -131,4 +140,15 @@ def saveCompressedData(filePath, compressedData):
             compressedString = convertFromZlibToBase64(compressedString)
             writer.writerow([compressedString])
 
-#TODO: write loadCompressedData!
+def loadCompressedData(filePath: str) -> List[bytes]:
+    """
+        Loads the data encoded with base64 and returns the 
+        states compressed with zlib!
+    """
+    compressedData: List[bytes] = []
+    with open(filePath, mode='r') as inputFile:
+        reader: csv._reader = csv.reader(inputFile)
+        for row in reader:
+            zlibCompressedState: bytes = row[0]
+            compressedData.append(zlibCompressedState)
+    return compressedData

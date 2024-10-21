@@ -93,7 +93,7 @@ def MonteCarlo(latticeSize, beta, lambdaZFilePath="", singleQubitErrorProbabilit
     # filePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}"
     
     # Adding more layers of states:
-    for _ in range(0):
+    for _ in range(2):
         probabilitySum = addOneMoreLayer(lattice, states, probabilitySum)
 
     lattice.setAmplitudeDenominator(probabilitySum ** 0.5)

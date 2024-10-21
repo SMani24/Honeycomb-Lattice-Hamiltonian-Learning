@@ -1,26 +1,29 @@
 # In the name of God
 # SMani24
 
+from typing import List
 import HoneyComb
 import Utils
 
 FLOAT_SAVING_FORMAT = '%.40f'
 
-def updateVertexExpectationValue(lattice, vertexExpectationValue):
-    # print(lattice.calculateVertexExpectationValues())
+def updateVertexExpectationValue(lattice: HoneyComb.HoneyComb, 
+                                 vertexExpectationValue: List[float]) -> None:
+    #TODO: add documentation
     tmp = lattice.calculateVertexExpectationValues()
-    # print(max(tmp))
     for i in range(len(vertexExpectationValue)):
         vertexExpectationValue[i] += tmp[i]
 
-def updateLinkExpectationValue(lattice, linkExpectationValue):
-    # print(lattice.calculateLinkExpectationValues())
+def updateLinkExpectationValue(lattice: HoneyComb.HoneyComb, 
+                               linkExpectationValue: List[int]) -> None:
+    #TODO: add documentation
     tmp = lattice.calculateLinkExpectationValues()
-    # print(max(tmp))
     for i in range(len(linkExpectationValue)):
         linkExpectationValue[i] += tmp[i]
 
-def calculateExpectationValue(statesFilePath, outputFilePath, latticeSize, beta, lambdaZFilePath, batchNumber):
+def calculateExpectationValue(statesFilePath, outputFilePath, 
+                              latticeSize, beta, lambdaZFilePath, 
+                              batchNumber, probabilitySumFilePath):
     """
     For the given batch of states, loops through them and calculates the 
     expectation values based on this batch (for the end result you must loop 
@@ -63,9 +66,13 @@ def calculateExpectationValue(statesFilePath, outputFilePath, latticeSize, beta,
     del vertexExpectationValues
 
 
-def multiThreadCalculateExpectationValue(job):
-    statesFilePath, outputFilePath, latticeSize, beta, lambdaZFilePath, batchNumber = job
-    calculateExpectationValue(statesFilePath=statesFilePath, outputFilePath=outputFilePath,
-                              latticeSize=latticeSize, beta=beta, lambdaZFilePath=lambdaZFilePath,
-                              batchNumber=batchNumber)
+def multiThreadCalculateExpectationValue(job: List[str, str, int, int, str, int, str]) -> None:
+    statesFilePath, outputFilePath, latticeSize, beta, lambdaZFilePath, batchNumber, probabilitySumFilePath = job
+    calculateExpectationValue(statesFilePath=statesFilePath, 
+                              outputFilePath=outputFilePath,
+                              latticeSize=latticeSize, 
+                              beta=beta, 
+                              lambdaZFilePath=lambdaZFilePath,
+                              batchNumber=batchNumber, 
+                              probabilitySumFilePath=probabilitySumFilePath)
     

@@ -96,14 +96,14 @@ if __name__ == "__main__":
                         for configNumber in CONFIG_NUMBER_RANGE:
                             lambdaZFilePath = f"./LambdaConfigs/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/VertexLmabdaConfig={configNumber}.csv"
                             for batchNumber in BATCH_RANGE:
-                                statesFilePath = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}.csv"
-                                outputFilePath = f"./ExpectationValues/PartialExpectationValue/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}_"
-                                vertexExpectationValuesFilePath = outputFilePath + "vertexExpectationValues.csv"
-                                linkExpectationValuesFilePath = outputFilePath + "linkExpectationValues.csv"
-                                
+                                statesFilePath: str = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}.csv"
+                                outputFilePath: str = f"./ExpectationValues/PartialExpectationValue/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}_"
+                                vertexExpectationValuesFilePath: str = outputFilePath + "vertexExpectationValues.csv"
+                                linkExpectationValuesFilePath: str = outputFilePath + "linkExpectationValues.csv"
+                                probabilitySumFilePath: str = f"./MCOutput/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/ProbabilitySum.csv"
                                 if os.path.isfile(statesFilePath) == False or (os.path.isfile(vertexExpectationValuesFilePath ) == True or os.path.isfile(linkExpectationValuesFilePath) == True):
                                     continue
-                                poolJobs.append((statesFilePath, outputFilePath, latticeSize, beta, lambdaZFilePath, batchNumber))
+                                poolJobs.append((statesFilePath, outputFilePath, latticeSize, beta, lambdaZFilePath, batchNumber, probabilitySumFilePath))
             
             pool.map(CalculateExpectaionValue.multiThreadCalculateExpectationValue, poolJobs)
             finishTime = time.time()
