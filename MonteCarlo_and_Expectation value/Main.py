@@ -22,7 +22,7 @@ LATTICE_SIZES = [8]
 BETAS = [0.5]
 SINGLE_QUBIT_ERROR_PROBABILITES = [0.05]#, 0.1, 0.15, 0.2]
 CONFIG_NUMBER_RANGE = range(1)
-BATCH_RANGE = range(3000)
+BATCH_RANGE = range(300)
 
 def sumExpectationValues():
     for latticeSize in LATTICE_SIZES:

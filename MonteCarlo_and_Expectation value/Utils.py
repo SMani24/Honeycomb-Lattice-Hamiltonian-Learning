@@ -149,6 +149,6 @@ def loadCompressedData(filePath: str) -> List[bytes]:
     with open(filePath, mode='r') as inputFile:
         reader: csv._reader = csv.reader(inputFile)
         for row in reader:
-            zlibCompressedState: bytes = row[0]
+            zlibCompressedState: bytes = convertFromBase64ToZlib(row[0])
             compressedData.append(zlibCompressedState)
     return compressedData

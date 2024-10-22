@@ -1,7 +1,7 @@
 # In the name of God
 # SMani24
 
-from typing import List
+from typing import List, Tuple
 import HoneyComb
 import Utils
 
@@ -30,9 +30,9 @@ def calculateExpectationValue(statesFilePath, outputFilePath,
     over all the batches and sum them)
     """
     
-    states = Utils.loadData(statesFilePath)
+    states = Utils.loadCompressedData(statesFilePath)
     print(f"<A> Progress: BatchNumber = {batchNumber} file loaded")
-    probabilitySum = float(states[0])
+    probabilitySum = float(Utils.loadData(probabilitySumFilePath))
     
     # Initiating the lattice
     lattice = HoneyComb.HoneyComb(latticeSize=latticeSize, beta=beta, lambdaZFilePath=lambdaZFilePath)
@@ -66,7 +66,7 @@ def calculateExpectationValue(statesFilePath, outputFilePath,
     del vertexExpectationValues
 
 
-def multiThreadCalculateExpectationValue(job: List[str, str, int, int, str, int, str]) -> None:
+def multiThreadCalculateExpectationValue(job: Tuple[str, str, int, int, str, int, str]) -> None:
     statesFilePath, outputFilePath, latticeSize, beta, lambdaZFilePath, batchNumber, probabilitySumFilePath = job
     calculateExpectationValue(statesFilePath=statesFilePath, 
                               outputFilePath=outputFilePath,
