@@ -20,9 +20,9 @@ FLOAT_SAVING_FORMAT = '%.40f'
 
 LATTICE_SIZES = [8]
 BETAS = [0.5]
-SINGLE_QUBIT_ERROR_PROBABILITES = [0.05]#, 0.1, 0.15, 0.2]
+SINGLE_QUBIT_ERROR_PROBABILITES = [0.2]
 CONFIG_NUMBER_RANGE = range(1)
-BATCH_RANGE = range(300)
+BATCH_RANGE = range(20, 30000)
 
 def sumExpectationValues():
     for latticeSize in LATTICE_SIZES:
@@ -150,8 +150,11 @@ if __name__ == "__main__":
                                 if os.path.isfile(tmpOutputFilePath) == True:
                                     statesFilePaths.append(statesFilePath)
                                     tmpOutputFilePaths.append(tmpOutputFilePath)
-                            RecalculateDenominator.UniteFiles(tmpOutputFilePaths=tmpOutputFilePaths,
-                                              statesFilePaths=statesFilePaths)
+                            probabilitySumFilePath = MCOutputDir + f"ProbabilitySum.csv"
+                            RecalculateDenominator.UniteFiles(
+                                tmpOutputFilePaths=tmpOutputFilePaths,
+                                probabilitySumFilePath=probabilitySumFilePath
+                            )
             
             finishTime = time.time()
             print(f"Finished! total time = {finishTime - startTime}")
