@@ -1,5 +1,8 @@
+# In the name of God
 import ast
 import csv
+from typing import Iterable
+import zlib
 import numpy as np
 from Link import Link
 from Vertex import Vertex
@@ -16,6 +19,27 @@ class HoneyCombIsing:
         self.__plaquettes = []
         self.__make_lattice_components(lattice_size, lambda_z_file_path)
         self.energy = self.__calculate_whole_lattice_energy()
+        self.__convert_to_numpy()
+
+    def __convert_to_numpy(self) -> None:
+        """
+            To improve the efficiency of the code, all the arrays
+            will be converted to numpy arrays!
+        """
+        self.__links = np.array(self.__links, dtype=object)
+        self.__vertices = np.array(self.__vertices, dtype=object)
+        self.__plaquettes = np.array(self.__plaquettes, dtype=object)
+
+    @staticmethod
+    def __calculate_partial_lattice_energy(links: Iterable[Link]) -> None:
+        """
+            Calculates the energy for the given set of links
+        """
+        partial_energy = 0
+        for link in links:
+            partial_energy += link.calculate_energy()
+        partial_energy = - partial_energy
+        return partial_energy
 
     def __calculate_whole_lattice_energy(self) -> int:
         """
@@ -23,11 +47,7 @@ class HoneyCombIsing:
             paper (-Sigma(J * Theta1 * Theta2)) it will calculate the Hamiltonian
             and returns its value
         """
-        total_energy = 0
-        for link in self.__links:
-            total_energy += link.calculate_energy()
-        total_energy = - total_energy
-        return total_energy    
+        return self.__calculate_partial_lattice_energy(self.__links)
 
     def __loadFile(self, filePath):
         my_dict = dict()
@@ -152,5 +172,37 @@ class HoneyCombIsing:
         self.__initiate_components(lambda_z_file_path=lambda_z_file_path)
         self.__establish_connections()
         self.__delete_numeration()
+
+    def select_random_vertex(self) -> Vertex:
+        """
+            Returns a random vertex of the lattice
+        """
+        vertex = np.random.choice(self.__vertices)
+        return vertex
+    
+    def flip_vertex_spin(self, vertex: Vertex) -> None:
+        """
+            Given a vertex, it would flip its spin and re-
+            calculate the energy of the entire lattice
+            (In order to re-calculate the energy of the entire
+            lattice we only need to re calculate a few links!)
+        """
+        links_to_be_recalculated = vertex.links
+        old_partial_energy = self.__calculate_partial_lattice_energy(links=links_to_be_recalculated)
+        vertex.flip()
+        new_partial_energy = self.__calculate_partial_lattice_energy(links=links_to_be_recalculated)
+        self.energy = self.energy - old_partial_energy + new_partial_energy
+    
+    def generate_state_compressed_string(self) -> bytes:
+        """
+            Iterates over all the vertices and returns a  compressed 
+            string where the i-th character is the spin of the i-th vertex
+        """
+        state_string = ''
+        for vertex_number in range(self.__vertex_count):
+            vertex = self.__vertices[vertex_number]
+            state_string += vertex.get_state_string()
+
+        return zlib.compress(state_string.encode())
 
     

@@ -4,7 +4,7 @@ from Plaquette import Plaquette
 class Vertex:
     def __init__(self, vertex_number, spin=1):
         """
-            1 is equivalent to |+>
+             1 is equivalent to |+>
             -1 is equivalent to |->
         """
         self.number = vertex_number
@@ -23,3 +23,16 @@ class Vertex:
             Adds a single plaquette to the plaquettes of this vertex
         """
         self.plaquettes.append(plaquette)
+
+    def flip(self) -> None:
+        self.spin *= -1
+
+    def get_spin_string(self) -> str:
+        """
+            Returns the string of the spin of the vertex
+             1 is equivalent to |+>
+            -1 is equivalent to |->
+        """
+        if self.spin == 1:
+            return '+'
+        return '-'
