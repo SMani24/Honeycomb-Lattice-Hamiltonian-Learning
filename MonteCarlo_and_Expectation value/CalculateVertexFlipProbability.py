@@ -3,7 +3,7 @@
 
 import Utils
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 COEFFICIENT = [12496236.0/12496236.0000000000000000000000000000000000000000
@@ -29,8 +29,9 @@ def drawPlot(BETA, LATTICE_SIZE, CONFIG_RANGE, SINGLE_QUBIT_ERROR_PROBABILITIES)
                         vertexFlipProbability[i] += np.mean(vertex_A_ExpectationValue)
                     print(f"Config={configNumber} done!!")
                 
-                for i in range(5):
-                    vertexFlipProbability[i] *= COEFFICIENT[i]
+                # for i in range(5):
+                #     vertexFlipProbability[i] *= COEFFICIENT[i]
+                vertexFlipProbability = np.array([1] + list(vertexFlipProbability))
                 print(vertexFlipProbability)
 
                 vertexFlipProbability /= len(CONFIG_RANGE)
@@ -39,9 +40,9 @@ def drawPlot(BETA, LATTICE_SIZE, CONFIG_RANGE, SINGLE_QUBIT_ERROR_PROBABILITIES)
                 print(vertexFlipProbability)
                 
 
-                # plt.plot(vertexFlipProbability, SINGLE_QUBIT_ERROR_PROBABILITIES, marker='o')
-                # plt.xlabel("Vertex Flip Probability, p")
-                # plt.ylabel("Single Qubit Error Probability, er")
+                plt.plot(vertexFlipProbability, [0.0] + SINGLE_QUBIT_ERROR_PROBABILITIES, marker='o')
+                plt.xlabel("Vertex Flip Probability, p")
+                plt.ylabel("Single Qubit Error Probability, er")
 
-                # plotFilePath = f"./Plots/Beta={beta}.png"
-                # plt.savefig(plotFilePath)
+                plotFilePath = f"./Plots/Beta={beta}.png"
+                plt.savefig(plotFilePath)

@@ -1,0 +1,156 @@
+import ast
+import csv
+import numpy as np
+from Link import Link
+from Vertex import Vertex
+from Plaquette import Plaquette
+
+class HoneyCombIsing:
+    def __init__(self, lattice_size: int, beta: int, lambda_z_file_path: str=""):
+        self.__link_count = 3 * (lattice_size * lattice_size)
+        self.__vertex_count = 2 * (lattice_size * lattice_size)
+        self.__plaquette_count = lattice_size * lattice_size
+        self.__beta = beta
+        self.__links = []
+        self.__vertices = []
+        self.__plaquettes = []
+        self.__make_lattice_components(lattice_size, lambda_z_file_path)
+        self.energy = self.__calculate_whole_lattice_energy()
+
+    def __calculate_whole_lattice_energy(self) -> int:
+        """
+            By iterating over the entire lattice, based on the B2 formula of the
+            paper (-Sigma(J * Theta1 * Theta2)) it will calculate the Hamiltonian
+            and returns its value
+        """
+        total_energy = 0
+        for link in self.__links:
+            total_energy += link.calculate_energy()
+        total_energy = - total_energy
+        return total_energy    
+
+    def __loadFile(self, filePath):
+        my_dict = dict()
+        with open(filePath) as csv_file:
+            reader = csv.reader(csv_file)
+            for key, value in reader:
+                key = int(key)
+                value = ast.literal_eval(value)
+                my_dict[key] = value
+        return my_dict
+
+    def __load_numeration(self, lattice_size: int, 
+                          numeration_file_dir: str="./Numeration/") -> None:
+        """
+            Given the size of the lattice, it will find and load the 
+            corresponding numbering stored in the numeration_file_dir
+            and loads them to the appropriate place to later be used for 
+            initiation of the lattice.
+        """
+        #TODO: Make it so that it reads the files from the numeration folder and generates them if they don't exist (+ update the description if this is done)!
+        vertex_to_link_file_path = numeration_file_dir + f"LatticeSize={lattice_size}_vertexToLink.csv"
+        link_to_vertex_file_path = numeration_file_dir + f"LatticeSize={lattice_size}_linkToVertex.csv"
+        plaquette_to_link_file_path = numeration_file_dir + f"LatticeSize={lattice_size}_plaquetteToLink.csv"
+        plaquette_to_vertex_file_path = numeration_file_dir + f"LatticeSize={lattice_size}_plaquetteToVertex.csv"
+        vertex_to_plaquette_file_path = numeration_file_dir + f"LatticeSize={lattice_size}_vertexToPlaquette.csv"
+        link_to_plaquette_file_path = numeration_file_dir + f"LatticeSize={lattice_size}_linkToPlaquette.csv"
+        
+        self.__vertex_to_link = self.__loadFile(vertex_to_link_file_path)
+        self.__link_to_vertex = self.__loadFile(link_to_vertex_file_path)
+        self.__plaquette_to_link = self.__loadFile(plaquette_to_link_file_path)
+        self.__plaquette_to_vertex = self.__loadFile(plaquette_to_vertex_file_path)
+        self.__vertex_to_plaquette = self.__loadFile(vertex_to_plaquette_file_path)
+        self.__link_to_plaquette = self.__loadFile(link_to_plaquette_file_path)
+
+    def __initiate_components(self, lambda_z_file_path: str) -> None:
+        """
+            Makes empty vertices, links and plaquettes (creates new objects of
+            each class type and adds them to their corresponding list in lattice)
+        """            
+        lambda_z_config = np.zeros(self.__link_count) # This is an array where i-th value 
+                                                   # corresponds to the lambdaZ of i-th link
+        if lambda_z_file_path != "":
+            lambda_z_config = np.loadtxt(lambda_z_file_path, delimiter=',')
+        for link_number in range(self.__link_count):
+            self.__links.append(Link(link_number, 
+                                     self.__beta, 
+                                     lambda_z_config[link_number]))
+
+        for vertex_number in range(self.__vertex_count):
+            self.__vertices.append(Vertex(vertex_number)) 
+        
+        for plaquette_number in range(self.__plaquette_count):
+            self.__plaquettes.append(Plaquette(plaquette_number))
+
+    def __set_link_values(self) -> None:
+        """
+            Iterates over the links of the lattice and adds their 
+            neighbouring vertices and plaquettes to them 
+        """
+        for link in self.__links:
+            # Finding the corresponding vertices of a link
+            for vertex_number in self.__link_to_vertex[link.number]:
+                link.add_vertex(self.__vertices[vertex_number])
+            # Finding the corresponding plaquettes of a link
+            for plaquette_number in self.__link_to_plaquette[link.number]:
+                link.add_plaquette(self.__plaquettes[plaquette_number])
+            
+    def __set_vertex_values(self) -> None:
+        """
+            Iterates over the vertices of the lattice and adds their 
+            neighbouring links and plaquettes to them 
+        """
+        for vertex in self.__vertices:
+            # Finding the corresponding links of a vertex
+            for link_number in self.__vertex_to_link[vertex.number]:
+                vertex.add_link(self.__links[link_number])
+            # Finding the corresponding plaquettes of a vertex
+            for plaquette_number in self.__vertex_to_plaquette[vertex.number]:
+                vertex.add_plaquette(self.__plaquettes[plaquette_number])
+    
+    def __set_plaquette_values(self) -> None:
+        """
+            Iterates over the plaquettes of the lattice and adds their 
+            neighbouring links and vertices to them 
+        """
+        for plaquette in self.plaquette:
+            # Finding the corresponding links of a plaquette
+            for link_number in self.__plaquette_to_link[plaquette.number]:
+                plaquette.add_link(self.links[link_number])
+            # Finding the corresponding vertices of a link
+            for vertex_number in self.__plaquette_to_vertex[plaquette.number]:
+                plaquette.add_vertex(self.__vertices[vertex_number])
+
+    def __establish_connections(self) -> None:
+        """
+            Based on the data loaded by __load_numeration, this function will 
+            iterate over vertices, links and plaquettes and adds their connections
+            (as an attribute of their corresponding classes)
+        """
+        self.__set_link_values()
+        self.__set_vertex_values()
+        self.__set_plaquette_values()
+
+    def __delete_numeration(self) -> None:
+        del self.__vertex_to_link
+        del self.__link_to_vertex
+        del self.__plaquette_to_link
+        del self.__plaquette_to_vertex
+        del self.__vertex_to_plaquette
+        del self.__link_to_plaquette
+
+    def __make_lattice_components(self, lattice_size: int, 
+                                  lambda_z_file_path: str,
+                                  numeration_file_dir: str="./Numeration/") -> None:
+        """
+            Creates new components (vertices, links and plaquettes) and establishes
+            their connections (adjacencies) based on the files in the numeration_file_dir
+            directory (and according to the size of the lattice)
+        """
+        self.__load_numeration(lattice_size=lattice_size,
+                               numeration_file_dir=numeration_file_dir)
+        self.__initiate_components(lambda_z_file_path=lambda_z_file_path)
+        self.__establish_connections()
+        self.__delete_numeration()
+
+    
