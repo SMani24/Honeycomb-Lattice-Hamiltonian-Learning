@@ -3,7 +3,7 @@
 
 import os
 import sys
-from typing import List 
+from typing import List, Tuple 
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
 #TODO: Move this method of importing Utils to other TODOS!
@@ -11,6 +11,8 @@ import Utils
 import math
 import numpy as np
 import HoneyComb
+
+OUTPUT_DIRECTORY = "./MCOutput"
 
 def go_to_next_state(
     previous_energy: int, 
@@ -32,14 +34,14 @@ def go_to_next_state(
 def monte_carlo(
     lattice_size: int, 
     beta: int, 
-    lambda_z_file_path: str ="", 
-    single_qubit_error_probability: int =0, 
-    number_of_iteration: int =100000, 
-    number_of_samples: int =10000,
-    sampling_ratio: int = 1, 
-    config_number: int =-1,
-    plot_energies: bool =False,
-    output_directory: str ="./MCOutput"
+    lambda_z_file_path: str = "", 
+    single_qubit_error_probability: int = 0, 
+    number_of_iteration: int = 100000, 
+    number_of_samples: int = 10000,
+    sampling_ratio: int =  1, 
+    config_number: int = -1,
+    plot_energies: bool = False,
+    output_directory: str = "./MCOutput"
 ) -> None:
     #TODO: add a docstring
     if plot_energies:
@@ -55,11 +57,12 @@ def monte_carlo(
         new_energy = lattice.energy
         if not go_to_next_state(previous_energy=current_energy,
                                 next_energy=new_energy,
-                                beta=beta):
+                                beta=beta,
+                                T=T):
             lattice.flip_vertex_spin(vertex)
         current_energy = lattice.energy
         if plot_energies:
-            energies.append[current_energy]
+            energies.append(current_energy)
         if iteration % 10000 == 0:
             # Making a simple progress indicator
             print(f"MC: main iteration progress: config_number={config_number} {int(iteration / number_of_iteration * 100)}")
@@ -78,7 +81,7 @@ configNumber={config_number}.csv"
     Utils.save_dictionary(dictionary=states, output_file_path=output_file_path)
 
     Utils.plot_2D(
-        title="Energie Plot"
+        title="Energie Plot",
         x_label="Iteration number",
         y_label="Energie",
         y_values=energies
@@ -88,17 +91,15 @@ configNumber={config_number}.csv"
     del states
     del lattice
 
-def multi_thread_monte_carlo(job: List[int, int, str, int, int, int, int, int, bool, str]):
+def multi_thread_monte_carlo(job: Tuple[int, int, str, int, int, int, int, int, bool, str]):
     (lattice_size,
     beta,
     lambda_z_file_path,
     single_qubit_error_probability,
     number_of_iteration,
     number_of_samples,
-    sampling_ratio,
-    config_number,
-    plot_energies,
-    output_directory) = job
+    config_number) = job
+    sampling_ratio = 1 
     monte_carlo(
         lattice_size=lattice_size,
         beta=beta,
@@ -108,6 +109,5 @@ def multi_thread_monte_carlo(job: List[int, int, str, int, int, int, int, int, b
         number_of_samples=number_of_samples,
         sampling_ratio=sampling_ratio,
         config_number=config_number,
-        plot_energies=plot_energies,
-        output_directory=output_directory        
+        output_directory=OUTPUT_DIRECTORY       
     )

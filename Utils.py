@@ -161,6 +161,7 @@ def save_dictionary(dictionary: dict, output_file_path: str):
         Given a dictionary, it would save it in the 
         specified file path
         """
+        os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
         with open(output_file_path, 'w', newline='') as csv_file:  
             writer = csv.writer(csv_file)
             for key, value in dictionary.items():

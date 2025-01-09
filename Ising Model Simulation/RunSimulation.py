@@ -6,14 +6,14 @@ import MonteCarlo
 import argparse
 import time
 
-NUMBER_OF_ITERATIONS = int(1e6)
-NUMBER_OF_SAMPLES = int(1e4)
+NUMBER_OF_ITERATIONS = int(1e5)
+NUMBER_OF_SAMPLES = int(1e5)
 
 FLOAT_SAVING_FORMAT = '%.40f'
 
 LATTICE_SIZES = [8]
 BETAS = [0.5]
-SINGLE_QUBIT_ERROR_PROBABILITIES = [0.05, 0.1, 0.15, 0.2]
+SINGLE_QUBIT_ERROR_PROBABILITIES = [0.0, 0.05, 0.1, 0.15, 0.2]
 CONFIG_NUMBER_RANGE = range(1)
 BATCH_RANGE = range(0, 30000)
 
@@ -47,7 +47,8 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "-tn", "--thread-number",
-        dtype=int,
+        type=int,
+        default=12,
         help="Specifies the number of threads to be used"
     )
 
@@ -60,15 +61,14 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    print(args)
 
-    thread_number = 12
-    if args.thread_number is not None:
-        thread_number = args.thread_number
     mp.freeze_support()
-    pool = mp.Pool(thread_number)
+    pool = mp.Pool(args.thread_number)
 
     if args.monte_carlo:
         jobs = generate_monte_carlo_jobs()
+        print(jobs[0])
         pool.map(MonteCarlo.multi_thread_monte_carlo, jobs)
 
     finish_time = time.time()

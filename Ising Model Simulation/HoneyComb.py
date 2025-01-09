@@ -133,10 +133,10 @@ class HoneyCombIsing:
             Iterates over the plaquettes of the lattice and adds their 
             neighbouring links and vertices to them 
         """
-        for plaquette in self.plaquette:
+        for plaquette in self.__plaquettes:
             # Finding the corresponding links of a plaquette
             for link_number in self.__plaquette_to_link[plaquette.number]:
-                plaquette.add_link(self.links[link_number])
+                plaquette.add_link(self.__links[link_number])
             # Finding the corresponding vertices of a link
             for vertex_number in self.__plaquette_to_vertex[plaquette.number]:
                 plaquette.add_vertex(self.__vertices[vertex_number])
@@ -201,7 +201,7 @@ class HoneyCombIsing:
         state_string = ''
         for vertex_number in range(self.__vertex_count):
             vertex = self.__vertices[vertex_number]
-            state_string += vertex.get_state_string()
+            state_string += vertex.get_spin_string()
 
         return zlib.compress(state_string.encode())
 
