@@ -4,6 +4,7 @@
 import os
 import time
 import Utils
+#TODO: Use the Utils in the main directory
 import MonteCarlo
 import numpy as np
 import multiprocessing as mp

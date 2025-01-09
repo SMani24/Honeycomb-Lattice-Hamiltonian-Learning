@@ -1,3 +1,6 @@
+# In the name of God
+# SMani24
+
 class Plaquette:
     def __init__(self, number):
         self.__number = number

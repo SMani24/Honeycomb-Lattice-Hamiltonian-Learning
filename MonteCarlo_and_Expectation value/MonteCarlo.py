@@ -3,6 +3,7 @@
 
 import math
 import Utils
+#TODO: Use the Utils in the main directory!
 import random
 import HoneyComb
 # import matplotlib.pyplot as plt

@@ -1,6 +1,5 @@
 # In the name of God
 # SMani24
-# Ali Kookani
 
 import math
 

@@ -2,6 +2,7 @@
 # SMani24
 
 import Utils
+#TODO: Use the Utils in the main directory
 import numpy as np
 import matplotlib.pyplot as plt
 
