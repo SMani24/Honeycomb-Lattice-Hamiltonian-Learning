@@ -3,6 +3,10 @@
 
 from typing import Tuple
 import numpy as np
+import os
+import sys
+parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+sys.path.append(parent_dir)
 import Utils
 import zlib
 
@@ -55,7 +59,7 @@ def calculate_operator_A_expectation_value_for_vertex(
     Sum(sqrt(state_probability * converted_state_probability))
     """
     vertex_expectation_value = 0
-    for state, number_of_occurrences in occurrences:
+    for state, number_of_occurrences in occurrences.items():
         state_probability = number_of_occurrences / len(occurrences)
         converted_state = flip_vertex(
             vertex_number=vertex_number,
@@ -81,6 +85,7 @@ def calculate_operator_A_expectation_value(
 
     expectation_values = np.zeros(vertex_count)
     for vertex_number in range(vertex_count):
+        print(f"Vertex {vertex_number} Done!")
         expectation_values[vertex_number] = calculate_operator_A_expectation_value_for_vertex(
             occurrences=occurrences,
             vertex_number=vertex_number
@@ -99,6 +104,7 @@ def run(
     and saves the outputs!
     """
     occurrences = Utils.load_dictionary(occurrences_file_path)
+    print("Data Loaded succesfully!")
     expectation_values = calculate_operator_A_expectation_value(
         occurrences=occurrences,
         lattice_size=lattice_size
@@ -109,6 +115,7 @@ def run(
         data=expectation_values, 
         format=FLOAT_SAVING_FORMAT
     )
+    print("Expectation values saved succesfully!")
 
 def multithread_run(
     job: Tuple[int, str, str]

@@ -202,7 +202,7 @@ def load_dictionary(filePath):
     with open(filePath) as csv_file:
         reader = csv.reader(csv_file)
         for key, value in reader:
-            key = int(key)
+            key = ast.literal_eval(key)
             value = ast.literal_eval(value)
             my_dict[key] = value
     return my_dict

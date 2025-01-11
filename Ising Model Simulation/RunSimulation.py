@@ -17,7 +17,7 @@ FLOAT_SAVING_FORMAT = '%.40f'
 LATTICE_SIZES = [8]
 BETAS = [0.5]
 SINGLE_QUBIT_ERROR_PROBABILITIES = [0.0, 0.05, 0.1, 0.15, 0.2]
-CONFIG_NUMBER_RANGE = range(1)
+CONFIG_NUMBER_RANGE = range(10)
 BATCH_RANGE = range(0, 30000)
 
 def generate_monte_carlo_jobs() -> Tuple[int, int, str, int, int, int, int, int, bool, str]:
@@ -51,36 +51,33 @@ def generate_expectation_value_jobs() -> Tuple[int, str, str]:
         for beta in BETAS:
             for single_qubit_probability in SINGLE_QUBIT_ERROR_PROBABILITIES:
                 for config_number in CONFIG_NUMBER_RANGE:
-                    for batchNumber in BATCH_RANGE:
-                        occurrences_file_path = (
-                            f"./MCOutput/"
-                            f"latticeSize={lattice_size}/"
-                            f"Beta={beta}/"
-                            f"singleQubitErrorProbability={single_qubit_probability}/"
-                            f"configNumber={config_number}/"
-                            f"Batch={batchNumber}.csv"
-                        )
-                        output_file_directory = (
-                            f"./ExpectationValues/"
-                            f"PartialExpectationValue/"
-                            f"latticeSize={lattice_size}/"
-                            f"Beta={beta}/"
-                            f"singleQubitErrorProbability={single_qubit_probability}/"
-                            f"configNumber={config_number}/"
-                            f"Batch={batchNumber}_"
-                        )
-                        vertex_expectation_value_file_path = (
-                            output_file_directory + "vertexExpectationValues.csv"
-                        )
-                        # linkExpectationValuesFilePath: str = outputFilePath + "linkExpectationValues.csv"
-                        if (os.path.isfile(occurrences_file_path) is False or 
-                            os.path.isfile(vertex_expectation_value_file_path) is True): #or os.path.isfile(linkExpectationValuesFilePath) == True):
-                            continue
-                        jobs.append((
-                            lattice_size,
-                            occurrences_file_path,
-                            vertex_expectation_value_file_path
-                        ))
+                    occurrences_file_path = (
+                        f"./MCOutput/"
+                        f"latticeSize={lattice_size}/"
+                        f"Beta={beta}/"
+                        f"singleQubitErrorProbability={single_qubit_probability}/"
+                        f"configNumber={config_number}.csv"
+                    )
+                    output_file_directory = (
+                        f"./ExpectationValues/"
+                        f"PartialExpectationValue/"
+                        f"latticeSize={lattice_size}/"
+                        f"Beta={beta}/"
+                        f"singleQubitErrorProbability={single_qubit_probability}/"
+                        f"configNumber={config_number}_"
+                    )
+                    vertex_expectation_value_file_path = (
+                        output_file_directory + "vertexExpectationValues.csv"
+                    )
+                    # linkExpectationValuesFilePath: str = outputFilePath + "linkExpectationValues.csv"
+                    if (os.path.isfile(occurrences_file_path) is False or 
+                        os.path.isfile(vertex_expectation_value_file_path) is True): #or os.path.isfile(linkExpectationValuesFilePath) == True):
+                        continue
+                    jobs.append((
+                        lattice_size,
+                        occurrences_file_path,
+                        vertex_expectation_value_file_path
+                    ))
     
     return jobs
 
@@ -122,8 +119,10 @@ if __name__ == "__main__":
         pool.map(MonteCarlo.multi_thread_monte_carlo, jobs)
 
     if args.vertex_expectation_value:
+        print("VE")
         #TODO: make it so that in only produces jobs that are not already done!
         jobs = generate_expectation_value_jobs()
+        # print(jobs)
         pool.map(ExpectationValueCalculator.multithread_run, jobs)
 
 
