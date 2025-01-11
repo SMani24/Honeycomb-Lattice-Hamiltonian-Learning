@@ -17,7 +17,7 @@ FLOAT_SAVING_FORMAT = '%.40f'
 LATTICE_SIZES = [8]
 BETAS = [0.5]
 SINGLE_QUBIT_ERROR_PROBABILITIES = [0.0, 0.05, 0.1, 0.15, 0.2]
-CONFIG_NUMBER_RANGE = range(10)
+CONFIG_NUMBER_RANGE = range(1)
 BATCH_RANGE = range(0, 30000)
 
 def generate_monte_carlo_jobs() -> Tuple[int, int, str, int, int, int, int, int, bool, str]:
@@ -60,7 +60,7 @@ def generate_expectation_value_jobs() -> Tuple[int, str, str]:
                     )
                     output_file_directory = (
                         f"./ExpectationValues/"
-                        f"PartialExpectationValue/"
+                        f"FinalExpectationValue/"
                         f"latticeSize={lattice_size}/"
                         f"Beta={beta}/"
                         f"singleQubitErrorProbability={single_qubit_probability}/"
