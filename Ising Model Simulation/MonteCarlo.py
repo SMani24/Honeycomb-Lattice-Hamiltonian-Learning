@@ -39,7 +39,7 @@ def monte_carlo(
     number_of_iteration: int = 100000, 
     number_of_samples: int = 10000,
     sampling_ratio: int =  1, 
-    config_number: int = -1,
+    config_number: int = -1, 
     plot_energies: bool = False,
     output_directory: str = "./MCOutput"
 ) -> None:

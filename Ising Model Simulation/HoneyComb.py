@@ -1,11 +1,11 @@
 # In the name of God
-import ast
-import csv
-from typing import Iterable
+
 import zlib
+import Utils
 import numpy as np
 from Link import Link
 from Vertex import Vertex
+from typing import Iterable
 from Plaquette import Plaquette
 
 class HoneyCombIsing:
@@ -49,16 +49,6 @@ class HoneyCombIsing:
         """
         return self.__calculate_partial_lattice_energy(self.__links)
 
-    def __loadFile(self, filePath):
-        my_dict = dict()
-        with open(filePath) as csv_file:
-            reader = csv.reader(csv_file)
-            for key, value in reader:
-                key = int(key)
-                value = ast.literal_eval(value)
-                my_dict[key] = value
-        return my_dict
-
     def __load_numeration(self, lattice_size: int, 
                           numeration_file_dir: str="./Numeration/") -> None:
         """
@@ -75,12 +65,12 @@ class HoneyCombIsing:
         vertex_to_plaquette_file_path = numeration_file_dir + f"LatticeSize={lattice_size}_vertexToPlaquette.csv"
         link_to_plaquette_file_path = numeration_file_dir + f"LatticeSize={lattice_size}_linkToPlaquette.csv"
         
-        self.__vertex_to_link = self.__loadFile(vertex_to_link_file_path)
-        self.__link_to_vertex = self.__loadFile(link_to_vertex_file_path)
-        self.__plaquette_to_link = self.__loadFile(plaquette_to_link_file_path)
-        self.__plaquette_to_vertex = self.__loadFile(plaquette_to_vertex_file_path)
-        self.__vertex_to_plaquette = self.__loadFile(vertex_to_plaquette_file_path)
-        self.__link_to_plaquette = self.__loadFile(link_to_plaquette_file_path)
+        self.__vertex_to_link = Utils.load_dictionary(vertex_to_link_file_path)
+        self.__link_to_vertex = Utils.load_dictionary(link_to_vertex_file_path)
+        self.__plaquette_to_link = Utils.load_dictionary(plaquette_to_link_file_path)
+        self.__plaquette_to_vertex = Utils.load_dictionary(plaquette_to_vertex_file_path)
+        self.__vertex_to_plaquette = Utils.load_dictionary(vertex_to_plaquette_file_path)
+        self.__link_to_plaquette = Utils.load_dictionary(link_to_plaquette_file_path)
 
     def __initiate_components(self, lambda_z_file_path: str) -> None:
         """
