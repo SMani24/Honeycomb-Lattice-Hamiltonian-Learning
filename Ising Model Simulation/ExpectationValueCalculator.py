@@ -65,8 +65,9 @@ def calculate_operator_A_expectation_value_for_vertex(
             vertex_number=vertex_number,
             compressed_state=state
         )
-        converted_state_probability = occurrences[number_of_occurrences] / len(occurrences)
-        vertex_expectation_value += np.sqrt(state_probability * converted_state_probability)
+        if converted_state in occurrences:
+            converted_state_probability = occurrences[converted_state] / len(occurrences)
+            vertex_expectation_value += np.sqrt(state_probability * converted_state_probability)
     return vertex_expectation_value
 
 def calculate_operator_A_expectation_value(

@@ -23,7 +23,7 @@ def drawPlot(BETA, LATTICE_SIZE, CONFIG_RANGE, SINGLE_QUBIT_ERROR_PROBABILITIES)
                     for i, singleQubitErrorProbability in enumerate(SINGLE_QUBIT_ERROR_PROBABILITIES):
                         dirPath = f"./ExpectationValues/FinalExpectationValue/"
                         filePath = f"latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
-                        vertex_A_ExpectationValueFilePath = dirPath + filePath + f"vertex_A_ExpectationValue_configNumber={configNumber}.csv"
+                        vertex_A_ExpectationValueFilePath = dirPath + filePath + f"configNumber={configNumber}_vertexExpectationValues.csv"
                         vertex_A_ExpectationValue = Utils.loadData(vertex_A_ExpectationValueFilePath)
                         vertex_A_ExpectationValue = vertex_A_ExpectationValue.astype(float)
                         # print(vertex_A_ExpectationValue)
@@ -32,7 +32,7 @@ def drawPlot(BETA, LATTICE_SIZE, CONFIG_RANGE, SINGLE_QUBIT_ERROR_PROBABILITIES)
                 
                 # for i in range(5):
                 #     vertexFlipProbability[i] *= COEFFICIENT[i]
-                vertexFlipProbability = np.array([1] + list(vertexFlipProbability))
+                # vertexFlipProbability = np.array([1] + list(vertexFlipProbability))
                 print(vertexFlipProbability)
 
                 vertexFlipProbability /= len(CONFIG_RANGE)
@@ -41,7 +41,7 @@ def drawPlot(BETA, LATTICE_SIZE, CONFIG_RANGE, SINGLE_QUBIT_ERROR_PROBABILITIES)
                 print(vertexFlipProbability)
                 
 
-                plt.plot(vertexFlipProbability, [0.0] + SINGLE_QUBIT_ERROR_PROBABILITIES, marker='o')
+                plt.plot(vertexFlipProbability, SINGLE_QUBIT_ERROR_PROBABILITIES, marker='o')
                 plt.xlabel("Vertex Flip Probability, p")
                 plt.ylabel("Single Qubit Error Probability, er")
 

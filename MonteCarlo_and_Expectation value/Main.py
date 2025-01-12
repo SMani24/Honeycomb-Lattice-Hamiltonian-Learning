@@ -21,7 +21,7 @@ FLOAT_SAVING_FORMAT = '%.40f'
 
 LATTICE_SIZES = [8]
 BETAS = [0.5]
-SINGLE_QUBIT_ERROR_PROBABILITES = [0.05, 0.1, 0.15, 0.2]
+SINGLE_QUBIT_ERROR_PROBABILITES = [0.0, 0.05, 0.1, 0.15, 0.2]
 CONFIG_NUMBER_RANGE = range(1)
 BATCH_RANGE = range(0, 30000)
 
@@ -34,19 +34,19 @@ def sumExpectationValues():
                 for configNumber in CONFIG_NUMBER_RANGE:
                     vertexExpectationValues = np.zeros(vertexCount)
                     linkExpectationValues = np.zeros(linkCount)
-                    for batchNumber in BATCH_RANGE:
-                        outputFilePath = f"./ExpectationValues/PartialExpectationValue/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}/Batch={batchNumber}_"
-                        vertexExpectationValuesFilePath = outputFilePath + "vertexExpectationValues.csv"
-                        linkExpectationValuesFilePath = outputFilePath + "linkExpectationValues.csv"
-                        
-                        if os.path.isfile(vertexExpectationValuesFilePath) == False: # or os.path.isfile(linkExpectationValuesFilePath) == False:
-                                continue
-                        
-                        batchVertexExpectationValue = Utils.loadData(vertexExpectationValuesFilePath, float)
-                        # batchLinkExpectationValue = Utils.loadData(linkExpectationValuesFilePath, float)
+                    # for batchNumber in BATCH_RANGE:
+                    outputFilePath = f"./ExpectationValues/PartialExpectationValue/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/configNumber={configNumber}_"#/Batch={batchNumber}_"
+                    vertexExpectationValuesFilePath = outputFilePath + "vertexExpectationValues.csv"
+                    linkExpectationValuesFilePath = outputFilePath + "linkExpectationValues.csv"
+                    
+                    if os.path.isfile(vertexExpectationValuesFilePath) == False: # or os.path.isfile(linkExpectationValuesFilePath) == False:
+                            continue
+                    
+                    batchVertexExpectationValue = Utils.loadData(vertexExpectationValuesFilePath, float)
+                    # batchLinkExpectationValue = Utils.loadData(linkExpectationValuesFilePath, float)
 
-                        vertexExpectationValues += batchVertexExpectationValue
-                        # linkExpectationValues += batchLinkExpectationValue
+                    vertexExpectationValues += batchVertexExpectationValue
+                    # linkExpectationValues += batchLinkExpectationValue
 
                     outputFilePath = f"./ExpectationValues/FinalExpectationValue/latticeSize={latticeSize}/Beta={beta}/singleQubitErrorProbability={singleQubitErrorProbability}/"
                     vertexExpectationValuesFilePath = outputFilePath + f"vertex_A_ExpectationValue_configNumber={configNumber}.csv"
