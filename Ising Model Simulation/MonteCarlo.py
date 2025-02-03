@@ -47,9 +47,12 @@ def monte_carlo(
     if plot_energies:
         energies = []
     states = dict()
-    lattice = HoneyComb.HoneyCombIsing(lattice_size=lattice_size,
-                                       beta=beta,
-                                       lambda_z_file_path=lambda_z_file_path)
+    lattice = HoneyComb.HoneyCombIsing(
+        lattice_size=lattice_size,
+        beta=beta,
+        lambda_z_file_path=lambda_z_file_path,
+        initiate_randomly=True
+    )
     current_energy = lattice.energy
     for iteration in range(number_of_iteration + number_of_samples):
         vertex = lattice.select_random_vertex()

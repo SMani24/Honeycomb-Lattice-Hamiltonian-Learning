@@ -13,7 +13,13 @@ from typing import Iterable
 from Plaquette import Plaquette
 
 class HoneyCombIsing:
-    def __init__(self, lattice_size: int, beta: int, lambda_z_file_path: str=""):
+    def __init__(
+        self, 
+        lattice_size: int, 
+        beta: int, 
+        lambda_z_file_path: str="",
+        initiate_randomly: bool=False
+    ) -> None:
         self.__link_count = 3 * (lattice_size * lattice_size)
         self.__vertex_count = 2 * (lattice_size * lattice_size)
         self.__plaquette_count = lattice_size * lattice_size
@@ -24,6 +30,8 @@ class HoneyCombIsing:
         self.__make_lattice_components(lattice_size, lambda_z_file_path)
         self.energy = self.__calculate_whole_lattice_energy()
         self.__convert_to_numpy()
+        if initiate_randomly:
+            self.__assign_random_spin_configuration()
 
     def __convert_to_numpy(self) -> None:
         """
@@ -198,5 +206,14 @@ class HoneyCombIsing:
             state_string += vertex.get_spin_string()
 
         return zlib.compress(state_string.encode())
+
+    def __assign_random_spin_configuration(self) -> None:
+        """
+            Makes a random spin configuration for each vertex and 
+            assigns the corresponding values to each vertex's spin
+        """
+        spin_orientation = np.random.choice([-1, 1], self.__vertex_count)
+        for index, vertex in enumerate(self.__vertices):
+            vertex.set_spin(spin_orientation[index])
 
     

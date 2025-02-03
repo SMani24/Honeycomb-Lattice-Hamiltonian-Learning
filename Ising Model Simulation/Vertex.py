@@ -9,6 +9,7 @@ class Vertex:
              1 is equivalent to |+>
             -1 is equivalent to |->
         """
+        #TODO: Check if it's correct for the spins to be either -1 or 1?
         self.number = vertex_number
         self.links = []
         self.plaquettes = []
@@ -38,3 +39,11 @@ class Vertex:
         if self.spin == 1:
             return '+'
         return '-'
+    
+    def set_spin(self, spin: int) -> None:
+        """
+            Sets the spin of the vertex to the given value
+        """
+        self.spin = spin
+
+    

@@ -8,6 +8,7 @@ from typing import List, Tuple
 import MonteCarlo
 import argparse
 import time
+import VertexFlipProbabilityCalculator
 
 NUMBER_OF_ITERATIONS = int(1e5)
 NUMBER_OF_SAMPLES = int(1e5)
@@ -105,6 +106,12 @@ if __name__ == "__main__":
         help="""Runs expectation value calculator with parameters
         set in the code"""
     )
+    parser.add_argument(
+        "-vfp", "--vertex-flip-probability",
+        action="store_true",
+        help="""Calculates vertex flip probability based on the 
+        expectation values previously calculated and draws its graph!"""
+    )
 
     args = parser.parse_args()
     print(args)
@@ -115,16 +122,19 @@ if __name__ == "__main__":
     if args.monte_carlo:
         #TODO: make it so it only produces jobs that are not already done!
         jobs = generate_monte_carlo_jobs()
-        print(jobs[0])
         pool.map(MonteCarlo.multi_thread_monte_carlo, jobs)
 
     if args.vertex_expectation_value:
-        print("VE")
         #TODO: make it so that in only produces jobs that are not already done!
         jobs = generate_expectation_value_jobs()
-        # print(jobs)
         pool.map(ExpectationValueCalculator.multithread_run, jobs)
 
-
+    if args.vertex_flip_probability:
+        VertexFlipProbabilityCalculator.calculate_vertex_flip_probability(
+            BETAS=BETAS,
+            LATTICE_SIZE=LATTICE_SIZES,
+            CONFIG_RANGE=CONFIG_NUMBER_RANGE,
+            SINGLE_QUBIT_PROBABILITIES=SINGLE_QUBIT_ERROR_PROBABILITIES
+        )
     finish_time = time.time()
     print(f"Total time = {finish_time - start_time}")    

@@ -2,13 +2,16 @@
 # SMani24
 
 import base64
+import platform
 from typing import Iterable, List
 import zlib
 import numpy as np
 import csv
 import ast
 import os
-# import matplotlib.pyplot as plt
+IS_PYPY = platform.python_implementation() == "PyPy"
+if not IS_PYPY:
+    import matplotlib.pyplot as plt
 
 #TODO: Fixe the formatting of all the functions!
 
@@ -168,34 +171,36 @@ def save_dictionary(dictionary: dict, output_file_path: str):
                 writer.writerow([key, value])
         csv_file.close()
 
-# def plot_2D(
-#     title: str, 
-#     x_label: str, 
-#     y_label: str, 
-#     y_values: Iterable, 
-#     x_values: Iterable | None =None, 
-#     show: bool =True, 
-#     save: bool=False, 
-#     output_file_path: str =""
-# ):
-#     """
-#     Plot a 2D graph of the given y_values against x_values
+def plot_2D(
+    title: str, 
+    x_label: str, 
+    y_label: str, 
+    y_values: Iterable, 
+    x_values: Iterable | None =None, 
+    show: bool =True, 
+    save: bool=False, 
+    output_file_path: str =""
+) -> None:
+    if IS_PYPY:
+        return
+    """
+    Plot a 2D graph of the given y_values against x_values
 
-#     Given the y_values of a function and its x_values, it would
-#     draw and show (if show==True) the plot of the function and 
-#     save (if save==True), if x_values are not provided it would 
-#     assume they are 0, 1, 2, ..., len(y_values)
-#     """
-#     plt.title(title)
-#     plt.xlabel(x_label)
-#     plt.ylabel(y_label)
-#     if x_values is None:
-#         x_values = list(range(len(y_values)))
-#     plt.plot(x_values, y_values)
-#     if show:
-#         plt.show()
-#     if save:
-#         plt.savefig(output_file_path)
+    Given the y_values of a function and its x_values, it would
+    draw and show (if show==True) the plot of the function and 
+    save (if save==True), if x_values are not provided it would 
+    assume they are 0, 1, 2, ..., len(y_values)
+    """
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    if x_values is None:
+        x_values = list(range(len(y_values)))
+    plt.plot(x_values, y_values)
+    if show:
+        plt.show()
+    if save:
+        plt.savefig(output_file_path)
 
 def load_dictionary(filePath):
     my_dict = dict()

@@ -31,5 +31,5 @@ class Link:
         """
         Theta1 = self.vertices[0].spin
         Theta2 = self.vertices[1].spin
-        self.J = math.sinh(self.lambda_z * self.beta)
+        self.J = 2 * math.sinh(self.lambda_z * self.beta)
         return (self.J * Theta1 * Theta2)
