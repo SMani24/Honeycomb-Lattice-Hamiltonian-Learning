@@ -27,6 +27,8 @@ class HoneyCombIsing:
         self.__links = []
         self.__vertices = []
         self.__plaquettes = []
+        self.__links_with_error = set()
+        self.__amplitude_power = self.__calculate_lattice_amplitude_power()
         self.__make_lattice_components(lattice_size, lambda_z_file_path)
         self.energy = self.__calculate_whole_lattice_energy()
         self.__convert_to_numpy()
@@ -110,6 +112,8 @@ class HoneyCombIsing:
             neighbouring vertices and plaquettes to them 
         """
         for link in self.__links:
+            if link.lambda_z != 0 or link.lambda_z != '0':
+                self.__links_with_error.add(link)
             # Finding the corresponding vertices of a link
             for vertex_number in self.__link_to_vertex[link.number]:
                 link.add_vertex(self.__vertices[vertex_number])
@@ -190,9 +194,22 @@ class HoneyCombIsing:
             lattice we only need to re calculate a few links!)
         """
         links_to_be_recalculated = vertex.links
-        old_partial_energy = self.__calculate_partial_lattice_energy(links=links_to_be_recalculated)
+        amplitude_power_to_be_removed = self.__calculate_partial_lattice_amplitude_power(
+            links=links_to_be_recalculated
+        )
+        old_partial_energy = self.__calculate_partial_lattice_energy(
+            links=links_to_be_recalculated
+        )
+        
         vertex.flip()
-        new_partial_energy = self.__calculate_partial_lattice_energy(links=links_to_be_recalculated)
+        
+        amplitude_power_to_be_added = self.__calculate_partial_lattice_amplitude_power(
+            links=links_to_be_recalculated
+        )
+        self.__amplitude_power += amplitude_power_to_be_added - amplitude_power_to_be_removed
+        new_partial_energy = self.__calculate_partial_lattice_energy(
+            links=links_to_be_recalculated
+        )
         self.energy = self.energy - old_partial_energy + new_partial_energy
     
     def generate_state_compressed_string(self) -> bytes:
@@ -216,4 +233,27 @@ class HoneyCombIsing:
         for index, vertex in enumerate(self.__vertices):
             vertex.set_spin(spin_orientation[index])
 
-    
+    def __calculate_partial_lattice_amplitude_power(self, links: Link) -> int:
+        """
+        By iterating over the given links,
+        calculates the amplitude's power (the power of e) 
+        (probability squared) of the lattice
+        based on formula A5 of the paper
+        """
+        e_power = 0
+        for link in links:
+            e_power += link.lambda_z * link.vertices[0].spin * link.vertices[1].spin
+        e_power *= self.__beta
+        return e_power
+
+    def __calculate_lattice_amplitude_power(self) -> None:
+        """
+        By iterating over all the links that have a non-zero lambda,
+        calculates the amplitude's power (the power of e) 
+        (probability squared) of the lattice
+        based on formula A5 of the paper
+        """
+        e_power = self.__calculate_partial_lattice_amplitude_power(
+            links=self.__links_with_error
+        )
+        return e_power

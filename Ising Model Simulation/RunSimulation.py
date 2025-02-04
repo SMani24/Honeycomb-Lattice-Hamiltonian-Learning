@@ -8,10 +8,11 @@ from typing import List, Tuple
 import MonteCarlo
 import argparse
 import time
-import VertexFlipProbabilityCalculator
+# import VertexFlipProbabilityCalculator
 
 NUMBER_OF_ITERATIONS = int(1e5)
 NUMBER_OF_SAMPLES = int(1e5)
+NUMBER_OF_RUNS = 10
 
 FLOAT_SAVING_FORMAT = '%.40f'
 
@@ -27,22 +28,24 @@ def generate_monte_carlo_jobs() -> Tuple[int, int, str, int, int, int, int, int,
     for lattice_size in LATTICE_SIZES:
         for beta in BETAS:
             for single_qubit_error_probability in SINGLE_QUBIT_ERROR_PROBABILITIES:
-                for config_number in CONFIG_NUMBER_RANGE:
-                    lambda_z_file_path = (
-                        f"./LambdaConfigs/latticeSize={lattice_size}/"
-                        f"Beta={beta}/"
-                        f"singleQubitErrorProbability={single_qubit_error_probability}/"
-                        f"VertexLmabdaConfig={config_number}.csv"
-                    )
-                    jobs.append((
-                        lattice_size, 
-                        beta, 
-                        lambda_z_file_path, 
-                        single_qubit_error_probability, 
-                        NUMBER_OF_ITERATIONS, 
-                        NUMBER_OF_SAMPLES, 
-                        config_number
-                    ))
+                for run_number in range(NUMBER_OF_RUNS):
+                    for config_number in CONFIG_NUMBER_RANGE:
+                        lambda_z_file_path = (
+                            f"./LambdaConfigs/latticeSize={lattice_size}/"
+                            f"Beta={beta}/"
+                            f"singleQubitErrorProbability={single_qubit_error_probability}/"
+                            f"VertexLmabdaConfig={config_number}.csv"
+                        )
+                        jobs.append((
+                            lattice_size, 
+                            beta, 
+                            lambda_z_file_path, 
+                            single_qubit_error_probability,
+                            run_number, 
+                            NUMBER_OF_ITERATIONS, 
+                            NUMBER_OF_SAMPLES, 
+                            config_number
+                        ))
     return jobs
 
 def generate_expectation_value_jobs() -> Tuple[int, str, str]:

@@ -35,7 +35,8 @@ def monte_carlo(
     lattice_size: int, 
     beta: int, 
     lambda_z_file_path: str = "", 
-    single_qubit_error_probability: int = 0, 
+    single_qubit_error_probability: int = 0,
+    run_number: int = 0, 
     number_of_iteration: int = 100000, 
     number_of_samples: int = 10000,
     sampling_ratio: int =  1, 
@@ -58,10 +59,11 @@ def monte_carlo(
         vertex = lattice.select_random_vertex()
         lattice.flip_vertex_spin(vertex)
         new_energy = lattice.energy
-        if not go_to_next_state(previous_energy=current_energy,
-                                next_energy=new_energy,
-                                beta=beta,
-                                T=T):
+        if not go_to_next_state(
+            previous_energy=current_energy,
+            next_energy=new_energy,
+            beta=beta,
+        ):
             lattice.flip_vertex_spin(vertex)
         current_energy = lattice.energy
         if plot_energies:
@@ -77,28 +79,34 @@ def monte_carlo(
             else:
                 states[state] += 1
 
-    file_name = f"/latticeSize={lattice_size}/Beta={beta}/\
-singleQubitErrorProbability={single_qubit_error_probability}/\
-configNumber={config_number}.csv" 
+    file_name = (
+        f"/latticeSize={lattice_size}/Beta={beta}/"
+        f"singleQubitErrorProbability={single_qubit_error_probability}/"
+        f"run_number={run_number}/"   
+        f"configNumber={config_number}.csv" 
+    )
     output_file_path = output_directory + file_name
+
+    #TODO: Save the state energy next to it!
     Utils.save_dictionary(dictionary=states, output_file_path=output_file_path)
 
-    Utils.plot_2D(
-        title="Energie Plot",
-        x_label="Iteration number",
-        y_label="Energie",
-        y_values=energies
-    )
-
-    del energies
+    if plot_energies:
+        Utils.plot_2D(
+            title="Energie Plot",
+            x_label="Iteration number",
+            y_label="Energie",
+            y_values=energies
+        )
+        del energies
     del states
     del lattice
 
-def multi_thread_monte_carlo(job: Tuple[int, int, str, int, int, int, int, int, bool, str]):
+def multi_thread_monte_carlo(job: Tuple[int, int, str, int, int, int, int, int, int, bool, str]):
     (lattice_size,
     beta,
     lambda_z_file_path,
     single_qubit_error_probability,
+    run_number,
     number_of_iteration,
     number_of_samples,
     config_number) = job
@@ -108,6 +116,7 @@ def multi_thread_monte_carlo(job: Tuple[int, int, str, int, int, int, int, int, 
         beta=beta,
         lambda_z_file_path=lambda_z_file_path,
         single_qubit_error_probability=single_qubit_error_probability,
+        run_number=run_number,
         number_of_iteration=number_of_iteration,
         number_of_samples=number_of_samples,
         sampling_ratio=sampling_ratio,
