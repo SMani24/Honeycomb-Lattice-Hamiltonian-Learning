@@ -28,8 +28,8 @@ class HoneyCombIsing:
         self.__vertices = []
         self.__plaquettes = []
         self.__links_with_error = set()
-        self.__amplitude_power = self.__calculate_lattice_amplitude_power()
         self.__make_lattice_components(lattice_size, lambda_z_file_path)
+        self.__amplitude_power = self.__calculate_lattice_amplitude_power()
         self.energy = self.__calculate_whole_lattice_energy()
         self.__convert_to_numpy()
         if initiate_randomly:
@@ -186,13 +186,16 @@ class HoneyCombIsing:
         vertex = np.random.choice(self.__vertices)
         return vertex
     
-    def flip_vertex_spin(self, vertex: Vertex) -> None:
+    def flip_vertex_spin(self, vertex: Vertex | int) -> None:
         """
-            Given a vertex, it would flip its spin and re-
-            calculate the energy of the entire lattice
+            Given a vertex (or its number), it would flip its spin 
+            and recalculate the energy of the entire lattice
             (In order to re-calculate the energy of the entire
             lattice we only need to re calculate a few links!)
         """
+        if type(vertex) == int:
+            vertex = self.__vertices[vertex]
+            
         links_to_be_recalculated = vertex.links
         amplitude_power_to_be_removed = self.__calculate_partial_lattice_amplitude_power(
             links=links_to_be_recalculated
@@ -257,3 +260,29 @@ class HoneyCombIsing:
             links=self.__links_with_error
         )
         return e_power
+
+    def get_lattice_amplitude(self) -> float:
+        """
+        Returns the amplitude of the lattice
+        """
+        return np.exp(self.__amplitude_power)
+    
+    def get_lattice_probability(self) -> float:
+        """
+        Returns the probability of the lattice (amplitude squared)
+        """
+        return np.exp(self.__amplitude_power * 2)
+    
+    def load_state(self, state) -> None:
+        """
+        Given a state, it would load it's configuration on the lattice
+        """
+        state_string = zlib.decompress(state).decode()
+        for vertex_number in range(self.__vertex_count):
+            vertex = self.__vertices[vertex_number]
+            vertex.set_spin(state_string[vertex_number])
+        
+        # Calculating the important values:
+        self.__amplitude_power = self.__calculate_lattice_amplitude_power()
+        self.energy = self.__calculate_whole_lattice_energy()
+    

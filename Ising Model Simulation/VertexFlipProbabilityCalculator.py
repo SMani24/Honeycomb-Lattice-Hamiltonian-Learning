@@ -13,29 +13,34 @@ def calculate_vertex_flip_probability(
     BETAS,
     LATTICE_SIZE,
     CONFIG_RANGE,
-    SINGLE_QUBIT_PROBABILITIES
+    SINGLE_QUBIT_PROBABILITIES,
+    RUN_SET
 ):
     for lattice_size in LATTICE_SIZE:
         for beta in BETAS:
             vertex_flip_probability = np.zeros(len(SINGLE_QUBIT_PROBABILITIES))
             for config_number in CONFIG_RANGE:
-                for i, single_qubit_probability in enumerate(SINGLE_QUBIT_PROBABILITIES):
-                    expectation_value_directory = (
-                        f"./ExpectationValues/"
-                        f"FinalExpectationValue/"
-                    )
-                    expectation_value_file_path = (
-                        expectation_value_directory + 
-                        f"latticeSize={lattice_size}/"
-                        f"Beta={beta}/"
-                        f"singleQubitErrorProbability={single_qubit_probability}/"
-                        f"configNumber={config_number}_vertexExpectationValues.csv"
-                    )
-                    vertex_A_expectation_values = Utils.loadData(
-                        filePath=expectation_value_file_path
-                    )
-                    vertex_A_expectation_values = vertex_A_expectation_values.astype(float)
-                    vertex_flip_probability[i] += np.mean(vertex_A_expectation_values)
+                for run_number in RUN_SET:
+                    for i, single_qubit_probability in enumerate(SINGLE_QUBIT_PROBABILITIES):
+                        expectation_value_directory = (
+                            f"./ExpectationValues/"
+                            f"FinalExpectationValue/"
+                        )
+                        expectation_value_file_path = (
+                            expectation_value_directory + 
+                            f"latticeSize={lattice_size}/"
+                            f"Beta={beta}/"
+                            f"singleQubitErrorProbability={single_qubit_probability}/"
+                            f"run_number={run_number}/"
+                            f"configNumber={config_number}_vertexExpectationValues.csv"
+                        )
+                        vertex_A_expectation_values = Utils.loadData(
+                            filePath=expectation_value_file_path
+                        )
+                        vertex_A_expectation_values = vertex_A_expectation_values.astype(float)
+                        vertex_flip_probability[i] += np.mean(vertex_A_expectation_values)
+                
+                vertex_flip_probability /= len(RUN_SET)
 
             vertex_flip_probability /= len(CONFIG_RANGE)
             print(vertex_flip_probability)

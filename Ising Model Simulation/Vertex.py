@@ -40,10 +40,17 @@ class Vertex:
             return '+'
         return '-'
     
-    def set_spin(self, spin: int) -> None:
+    def set_spin(self, spin: int | str) -> None:
         """
-            Sets the spin of the vertex to the given value
+        Sets the spin of the vertex to the given value, the input
+        can either be -1 or 1 or their corresponding string (+, -)
         """
-        self.spin = spin
-
-    
+        if type(spin) == str:
+            if spin == '+':
+                self.spin = 1
+            elif spin == '-':
+                self.spin = -1
+            else:
+                raise(f"spin = {spin} is not a valid value")
+        else:
+            self.spin = spin

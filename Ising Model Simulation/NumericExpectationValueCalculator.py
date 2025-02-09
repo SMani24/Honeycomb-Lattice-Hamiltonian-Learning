@@ -79,18 +79,18 @@ def calculate_operator_A_expectation_value(
     of the lattice.
 
     Given the states and their occurrences, it would calculate <Ai> 
-    for all the vertices by applying <Ai> to all the states and 
+    for all the vertices by applying Ai to all the states and 
     finding how many occurrences it has in the states
     """
     vertex_count = 2 * (lattice_size * lattice_size)
 
     expectation_values = np.zeros(vertex_count)
     for vertex_number in range(vertex_count):
-        print(f"Vertex {vertex_number} Done!")
         expectation_values[vertex_number] = calculate_operator_A_expectation_value_for_vertex(
             occurrences=occurrences,
             vertex_number=vertex_number
         )
+        print(f"Vertex {vertex_number} Done!")
     return expectation_values
 
 def run(
