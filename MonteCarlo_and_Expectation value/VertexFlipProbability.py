@@ -39,8 +39,18 @@ def drawPlot(x, y, outputPath, XLabel='', YLabel='', title=''):
     # Save the plot as a PNG file
     plt.savefig(outputPath, format='png')
 
+def saveData(filePath: str, data, format='%s', delimiter=',') -> None:
+    # Making the necessery directories:
+    os.makedirs(os.path.dirname(filePath), exist_ok=True)
+    if type(data) != list or type(data) != tuple:
+        data = [data]
+    data = np.array(data)
+    np.savetxt(filePath, data, delimiter=delimiter, fmt=format)
+
+    del data
+
 def run():
-    singleQubitErrorProbabilities = [0, 0.05, 0.1, 0.15, 0.2]
+    singleQubitErrorProbabilities = [0.0, 0.05, 0.1, 0.15, 0.2]
     for latticeSize in [8]:
         for beta in [0.5]:
             vertexFlipProbability = []
@@ -49,6 +59,8 @@ def run():
                 vertexFlipProbability.append(calculateAverageVertexFlipProbability(latticeSize, beta, singleQubitErrorProbability))
             
             plotPath = f"./ProbabilityPlots/latticeSize={latticeSize}/Beta={beta}/simulatedPlot.png"
+            vertexFlipProbability = np.array(vertexFlipProbability)
+            saveData("./tmp.csv", vertexFlipProbability)
             drawPlot(singleQubitErrorProbabilities, vertexFlipProbability, plotPath, "singleQubitErrorProbabilities", "vertexFlipProbability", f"simulatedPlot latticeSize={latticeSize}")
             print(plotPath)
 run()

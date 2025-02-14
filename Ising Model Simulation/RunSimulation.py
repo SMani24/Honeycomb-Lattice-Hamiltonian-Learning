@@ -11,15 +11,15 @@ import argparse
 import time
 import VertexFlipProbabilityCalculator
 
-NUMBER_OF_ITERATIONS = int(1e5)
-NUMBER_OF_SAMPLES = int(1e5)
+NUMBER_OF_ITERATIONS = int(1e6)
+NUMBER_OF_SAMPLES = int(1e4)
 RUN_SET = range(10)
 
 FLOAT_SAVING_FORMAT = '%.40f'
 
 LATTICE_SIZES = [8]
 BETAS = [0.5]
-SINGLE_QUBIT_ERROR_PROBABILITIES = [0.0]
+SINGLE_QUBIT_ERROR_PROBABILITIES = [0.0, 0.05, 0.1, 0.15, 0.2]
 CONFIG_NUMBER_RANGE = range(1)
 BATCH_RANGE = range(0, 30000)
 ADD_STATE = False
@@ -200,6 +200,7 @@ if __name__ == "__main__":
         pool.map(TheoreticalExpectationValueCalculator.multithread_run, jobs)
 
     if args.vertex_flip_probability:
+        #TODO: make it so it takes whether or not to save the data as input
         VertexFlipProbabilityCalculator.calculate_vertex_flip_probability(
             BETAS=BETAS,
             LATTICE_SIZE=LATTICE_SIZES,
