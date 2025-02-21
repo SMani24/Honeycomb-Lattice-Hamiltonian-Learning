@@ -112,6 +112,7 @@ def applyStabilizerOperatorA(vertexId, state, numeration):
     return newState
 
 def saveData(filePath: str, data, format='%s', delimiter=',') -> None:
+    #TODO: Add docstring
     # Making the necessery directories:
     os.makedirs(os.path.dirname(filePath), exist_ok=True)
     if type(data) != list or type(data) != tuple:
@@ -202,7 +203,7 @@ def plot_2D(
     if save:
         plt.savefig(output_file_path)
 
-def load_dictionary(filePath):
+def load_dictionary(filePath: str):
     my_dict = dict()
     with open(filePath) as csv_file:
         reader = csv.reader(csv_file)
@@ -211,3 +212,15 @@ def load_dictionary(filePath):
             value = ast.literal_eval(value)
             my_dict[key] = value
     return my_dict
+
+def complement_state(compressed_state: bytes) -> bytes:
+    state_string = zlib.decompress(compressed_state).decode()
+    complemented_state = ""
+    for spin in state_string:
+        if spin == '+':
+            complemented_state += '-'
+        elif spin == '-':
+            complemented_state += '+'
+        else:
+            raise(ValueError)
+        

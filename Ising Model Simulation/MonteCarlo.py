@@ -74,10 +74,13 @@ def monte_carlo(
 
         if iteration >= number_of_iteration and iteration % sampling_ratio == 0:
             state = lattice.generate_state_compressed_string()
+            complement_state = Utils.complement_state(state)
             if not state in states:
                 states[state] = 1
+                states[complement_state] = 1
             else:
                 states[state] += 1
+                states[complement_state] += 1
 
     file_name = (
         f"/latticeSize={lattice_size}/Beta={beta}/"
@@ -121,5 +124,6 @@ def multi_thread_monte_carlo(job: Tuple[int, int, str, int, int, int, int, int, 
         number_of_samples=number_of_samples,
         sampling_ratio=sampling_ratio,
         config_number=config_number,
+        plot_energies=True,
         output_directory=OUTPUT_DIRECTORY       
     )

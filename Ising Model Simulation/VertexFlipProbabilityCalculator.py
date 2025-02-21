@@ -14,9 +14,7 @@ def calculate_vertex_flip_probability(
     LATTICE_SIZE,
     CONFIG_RANGE,
     SINGLE_QUBIT_PROBABILITIES,
-    RUN_SET,
-    save_vertex_flip_probability_values=True,
-    vertex_flip_probability_values_file_path="./tmp.csv"
+    RUN_SET
 ):
     for lattice_size in LATTICE_SIZE:
         for beta in BETAS:
@@ -48,11 +46,6 @@ def calculate_vertex_flip_probability(
             print(vertex_flip_probability)
             vertex_flip_probability = (1 - vertex_flip_probability) / 2
             print(vertex_flip_probability)
-            if save_vertex_flip_probability_values:
-                Utils.saveData(
-                    filePath=vertex_flip_probability_values_file_path,
-                    data=vertex_flip_probability
-                )
             Utils.plot_2D(
                 title=(
                     f"The relation between single qubit"
@@ -63,3 +56,4 @@ def calculate_vertex_flip_probability(
                 y_values=SINGLE_QUBIT_PROBABILITIES,
                 x_values=vertex_flip_probability
             )
+            x = 12

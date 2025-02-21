@@ -20,8 +20,8 @@ class HoneyCombIsing:
         lambda_z_file_path: str="",
         initiate_randomly: bool=False
     ) -> None:
-        self.__link_count = 3 * (lattice_size * lattice_size)
-        self.__vertex_count = 2 * (lattice_size * lattice_size)
+        self.__link_count = self.number_of_links(lattice_size)
+        self.__vertex_count = self.number_of_vertices(lattice_size)
         self.__plaquette_count = lattice_size * lattice_size
         self.__beta = beta
         self.__links = []
@@ -285,4 +285,31 @@ class HoneyCombIsing:
         # Calculating the important values:
         self.__amplitude_power = self.__calculate_lattice_amplitude_power()
         self.energy = self.__calculate_whole_lattice_energy()
+    
+    @staticmethod
+    def number_of_vertices(lattice_size: int) -> int:
+        """
+        Calculate the number of vertices in the Honeycomb lattice
+
+        Parameters:
+        lattice_size(int): the size of the lattice
+
+        Returns:
+        int: The total number of vertices in the lattice
+        """
+        return 2 * (lattice_size * lattice_size)
+    
+    @staticmethod
+    def number_of_links(lattice_size: int) -> int:
+        """
+        Calculate the number of links in the Honeycomb lattice
+
+        Parameters:
+        lattice_size(int): The size of the lattice
+
+        Returns:
+        int: The total number of links in the lattice
+        """
+        return 3 * (lattice_size * lattice_size)
+    
     

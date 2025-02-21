@@ -10,6 +10,7 @@ import MonteCarlo
 import argparse
 import time
 import VertexFlipProbabilityCalculator
+import GenerateLambdaConfig
 
 NUMBER_OF_ITERATIONS = int(1e6)
 NUMBER_OF_SAMPLES = int(1e4)
@@ -17,8 +18,9 @@ RUN_SET = range(10)
 
 FLOAT_SAVING_FORMAT = '%.40f'
 
-LATTICE_SIZES = [8]
-BETAS = [0.5]
+LATTICE_SIZES = [8]#, 12, 16, 20, 24, 28, 32]
+BETAS = [0.001]
+POSITIVE_LAMBDA_FRACTIONS = [0.5]#, 0.6, 0.7, 0.8]
 SINGLE_QUBIT_ERROR_PROBABILITIES = [0.0, 0.05, 0.1, 0.15, 0.2]
 CONFIG_NUMBER_RANGE = range(1)
 BATCH_RANGE = range(0, 30000)
@@ -29,24 +31,24 @@ def generate_monte_carlo_jobs() -> Tuple[int, int, str, int, int, int, int, int,
     jobs = []
     for lattice_size in LATTICE_SIZES:
         for beta in BETAS:
-            for single_qubit_error_probability in SINGLE_QUBIT_ERROR_PROBABILITIES:
+            for q in POSITIVE_LAMBDA_FRACTIONS:
                 for run_number in RUN_SET:
-                    for config_number in CONFIG_NUMBER_RANGE:
-                        lambda_z_file_path = (
-                            f"./LambdaConfigs/latticeSize={lattice_size}/"
-                            f"Beta={beta}/"
-                            f"singleQubitErrorProbability={single_qubit_error_probability}/"
-                            f"VertexLmabdaConfig={config_number}.csv"
+                    for configuration_number in CONFIG_NUMBER_RANGE:
+                        lambda_configuration_file_path = (
+                            f"./lambda_configurations/"
+                            f"lattice_size={lattice_size}/"
+                            f"q={q}/"
+                            f"configuration_number={configuration_number}.csv"
                         )
                         jobs.append((
                             lattice_size, 
                             beta, 
-                            lambda_z_file_path, 
-                            single_qubit_error_probability,
+                            lambda_configuration_file_path, 
+                            q,
                             run_number, 
                             NUMBER_OF_ITERATIONS, 
                             NUMBER_OF_SAMPLES, 
-                            config_number
+                            configuration_number
                         ))
     return jobs
 
@@ -123,22 +125,41 @@ def generate_theoretical_expectation_value_jobs() -> Tuple[Tuple[int, int, str, 
                             os.path.isfile(vertex_expectation_value_file_path) is True): #or os.path.isfile(linkExpectationValuesFilePath) == True):
                             continue
                         
-                        lambda_z_file_path = (
-                            f"./LambdaConfigs/latticeSize={lattice_size}/"
-                            f"Beta={beta}/"
-                            f"singleQubitErrorProbability={single_qubit_error_probability}/"
-                            f"VertexLmabdaConfig={config_number}.csv"
+                        lambda_configuration_file_path = (
+                            f"./lambda_configurations/"
+                            f"lattice_size={lattice_size}/"
+                            f"q={q}/"
+                            f"configuration_number={configuration_number}"
                         )
 
                         jobs.append((
                             lattice_size, 
                             beta,
-                            lambda_z_file_path,
+                            lambda_configuration_file_path,
                             occurrences_file_path,
                             vertex_expectation_value_file_path,
                             ADD_STATE
                         ))
     
+    return jobs
+
+def generate_lambda_configuration_jobs() -> Tuple[int, int, int, str]:
+    jobs = []
+    for lattice_size in LATTICE_SIZES:
+        for q in POSITIVE_LAMBDA_FRACTIONS:
+            for configuration_number in CONFIG_NUMBER_RANGE:
+                lambda_configuration_file_path = (
+                    f"./lambda_configurations/"
+                    f"lattice_size={lattice_size}/"
+                    f"q={q}/"
+                    f"configuration_number={configuration_number}.csv"
+                )
+                jobs.append((
+                    lattice_size,
+                    q,
+                    0,
+                    lambda_configuration_file_path
+                ))
     return jobs
 
 if __name__ == "__main__":
@@ -178,6 +199,13 @@ if __name__ == "__main__":
         expectation values previously calculated and draws its graph!"""
     )
 
+    parser.add_argument(
+        "-glc", "--generate-lambda-configuration",
+        action="store_true",
+        help="""Generates the lambda_configuration file with the set
+        parameters"""
+    )
+
     args = parser.parse_args()
     print(args)
 
@@ -208,5 +236,9 @@ if __name__ == "__main__":
             SINGLE_QUBIT_PROBABILITIES=SINGLE_QUBIT_ERROR_PROBABILITIES,
             RUN_SET=RUN_SET
         )
+
+    if args.generate_lambda_configuration:
+        jobs = generate_lambda_configuration_jobs()
+        pool.map(GenerateLambdaConfig.multithread_run, jobs)
     finish_time = time.time()
     print(f"Total time = {finish_time - start_time}")    
