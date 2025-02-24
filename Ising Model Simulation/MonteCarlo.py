@@ -124,6 +124,6 @@ def multi_thread_monte_carlo(job: Tuple[int, int, str, int, int, int, int, int, 
         number_of_samples=number_of_samples,
         sampling_ratio=sampling_ratio,
         config_number=config_number,
-        plot_energies=True,
+        plot_energies=False,
         output_directory=OUTPUT_DIRECTORY       
     )

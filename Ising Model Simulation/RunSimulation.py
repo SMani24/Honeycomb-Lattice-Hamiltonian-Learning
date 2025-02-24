@@ -9,10 +9,10 @@ from typing import List, Tuple
 import MonteCarlo
 import argparse
 import time
-import VertexFlipProbabilityCalculator
+#import VertexFlipProbabilityCalculator
 import GenerateLambdaConfig
 
-NUMBER_OF_ITERATIONS = int(1e6)
+NUMBER_OF_ITERATIONS = int(1e4)
 NUMBER_OF_SAMPLES = int(1e4)
 RUN_SET = range(10)
 
@@ -57,14 +57,14 @@ def generate_numeric_expectation_value_jobs() -> Tuple[Tuple[int, str, str]]:
     jobs = []
     for lattice_size in LATTICE_SIZES:
         for beta in BETAS:
-            for single_qubit_error_probability in SINGLE_QUBIT_ERROR_PROBABILITIES:
+            for q in POSITIVE_LAMBDA_FRACTIONS:
                 for run_number in RUN_SET:
                     for config_number in CONFIG_NUMBER_RANGE:
                         occurrences_file_path = (
                             f"./MCOutput/"
                             f"latticeSize={lattice_size}/"
                             f"Beta={beta}/"
-                            f"singleQubitErrorProbability={single_qubit_error_probability}/"
+                            f"singleQubitErrorProbability={q}/"
                             f"run_number={run_number}/"
                             f"configNumber={config_number}.csv"
                         )
@@ -73,7 +73,7 @@ def generate_numeric_expectation_value_jobs() -> Tuple[Tuple[int, str, str]]:
                             f"FinalExpectationValue/"
                             f"latticeSize={lattice_size}/"
                             f"Beta={beta}/"
-                            f"singleQubitErrorProbability={single_qubit_error_probability}/"
+                            f"singleQubitErrorProbability={q}/"
                             f"run_number={run_number}/"
                             f"configNumber={config_number}_"
                         )
@@ -97,14 +97,14 @@ def generate_theoretical_expectation_value_jobs() -> Tuple[Tuple[int, int, str, 
     jobs = []
     for lattice_size in LATTICE_SIZES:
         for beta in BETAS:
-            for single_qubit_error_probability in SINGLE_QUBIT_ERROR_PROBABILITIES:
+            for q in POSITIVE_LAMBDA_FRACTIONS:
                 for run_number in RUN_SET:
                     for config_number in CONFIG_NUMBER_RANGE:
                         occurrences_file_path = (
                             f"./MCOutput/"
                             f"latticeSize={lattice_size}/"
                             f"Beta={beta}/"
-                            f"singleQubitErrorProbability={single_qubit_error_probability}/"
+                            f"singleQubitErrorProbability={q}/"
                             f"run_number={run_number}/"
                             f"configNumber={config_number}.csv"
                         )
@@ -113,7 +113,7 @@ def generate_theoretical_expectation_value_jobs() -> Tuple[Tuple[int, int, str, 
                             f"FinalExpectationValue/"
                             f"latticeSize={lattice_size}/"
                             f"Beta={beta}/"
-                            f"singleQubitErrorProbability={single_qubit_error_probability}/"
+                            f"singleQubitErrorProbability={q}/"
                             f"run_number={run_number}/"
                             f"configNumber={config_number}_"
                         )
@@ -129,7 +129,7 @@ def generate_theoretical_expectation_value_jobs() -> Tuple[Tuple[int, int, str, 
                             f"./lambda_configurations/"
                             f"lattice_size={lattice_size}/"
                             f"q={q}/"
-                            f"configuration_number={configuration_number}"
+                            f"configuration_number={config_number}.csv"
                         )
 
                         jobs.append((
@@ -225,6 +225,7 @@ if __name__ == "__main__":
     if args.theoretical_vertex_expectation_value:
         #TODO: make it so that in only produces jobs that are not already done!
         jobs = generate_theoretical_expectation_value_jobs()
+        print(jobs)
         pool.map(TheoreticalExpectationValueCalculator.multithread_run, jobs)
 
     if args.vertex_flip_probability:
