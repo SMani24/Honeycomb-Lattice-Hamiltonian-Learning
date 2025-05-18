@@ -102,6 +102,7 @@ class NumerateHoneycomb:
                         linkCnt += 1
         self.linkCordToNum = linkCordToNum
         self.linkToPlaquette = linkToPlaquette
+
     def NumerateVertices(self):
         L = self.latticeSize
         vertexCnt = 0
