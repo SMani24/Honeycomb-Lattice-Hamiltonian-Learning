@@ -54,3 +54,22 @@ class Vertex:
                 raise(f"spin = {spin} is not a valid value")
         else:
             self.spin = spin
+
+    def has_a_link_with_error(self) -> bool:
+        """
+        Check if the vertex has a link with error
+
+        This Method checks if the vertex has a link with error by
+        iterating over all the links of the vertex and checking if 
+        they have error or not (using the .has_error method of Link class)
+
+        Returns:
+            bool: True if the vertex has a link with error
+                  False if the vertex has no links with error
+        """
+        for link in self.links:
+            if link.has_error():
+                return True
+        return False
+
+    

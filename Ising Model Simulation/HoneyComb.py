@@ -312,4 +312,27 @@ class HoneyCombIsing:
         """
         return 3 * (lattice_size * lattice_size)
     
+    def calculate_number_of_vertices_with_error(self):
+        """
+        Calculates the number of vertices with error in the lattice
+
+        This method iterates over the vertices of the lattice and
+        checks whether or not they have a link with error by 
+        calling the .has_a_link_with_error on them.
+
+        Returns:
+            int: The number of vertices in the lattice that have
+                 at least one link with error
+        """
+        
+        number_of_vertices_with_error = 0
+        for vertex in self.__vertices:
+            if vertex.has_a_link_with_error():
+                number_of_vertices_with_error += 1
+        return number_of_vertices_with_error
     
+    def print_link_lambdas(self):
+        tmp = []
+        for link in self.__links:
+            tmp.append(link.has_error())
+        return tmp

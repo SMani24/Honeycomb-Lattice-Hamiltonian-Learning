@@ -33,3 +33,19 @@ class Link:
         Theta2 = self.vertices[1].spin
         self.J = 2 * math.sinh(self.lambda_z * self.beta)
         return (self.J * Theta1 * Theta2)
+    
+    def has_error(self):
+        """
+        Check if the link has error based on the value of lambda_z
+
+        This method evaluates that a link has error by checking if
+        a non-zero value has been assigned to lambda_z
+
+        Returns:
+            bool: True if there is an error (lambda_z != 0)
+                  False if there is no error (lambda_z == 0)
+        """
+        if self.lambda_z == 0.0:
+            return False
+        return True
+    

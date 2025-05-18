@@ -80,9 +80,10 @@ def multithread_run(job: Tuple[int, int, int, str]) -> None:
         lambda_configuration_file_path=lambda_configuration_file_path
     )
 
-generate_lambda_config(
-    lattice_size=8,
-    positive_lambda_fraction=0.5,
-    negative_lambda_fraction=0,
-    lambda_configuration_file_path="./tst.csv"
-)
+if __name__ == "__main__":
+    generate_lambda_config(
+        lattice_size=8,
+        positive_lambda_fraction=0.5,
+        negative_lambda_fraction=0,
+        lambda_configuration_file_path="./tst.csv"
+    )

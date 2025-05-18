@@ -223,6 +223,4 @@ def complement_state(compressed_state: bytes) -> bytes:
             complemented_state += '+'
         else:
             raise(ValueError)
-    complemented_state = zlib.compress(complemented_state.encode())
-    return complemented_state
         
